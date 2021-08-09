@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  FakeData: ""
+kind: Secret
+metadata:
+  name: aliyun-registry
+  namespace: default
+type: Opaque

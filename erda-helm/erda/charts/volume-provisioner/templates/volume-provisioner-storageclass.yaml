@@ -1,8 +1,8 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: erda-local-volume
-provisioner: erda/local-volume
+  name: dice-local-volume
+provisioner: dice/local-volume
 volumeBindingMode: WaitForFirstConsumer
 parameters:
   hostpath: {{ .Values.provisioner.local.hostpath | default "/data" }}
@@ -11,7 +11,7 @@ parameters:
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: erda-nfs-volume
-provisioner: erda/netdata-volume
+  name: dice-nfs-volume
+provisioner: dice/netdata-volume
 parameters:
   hostpath: {{ .Values.provisioner.nfs.hostpath | default "/netdata" }}

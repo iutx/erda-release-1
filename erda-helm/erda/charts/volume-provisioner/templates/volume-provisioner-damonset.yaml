@@ -17,7 +17,7 @@ spec:
       labels:
         app: volume-provisioner
     spec:
-      serviceAccountName: volume-provisioner
+      serviceAccountName: erda-volume-provisioner
       containers:
         - image:
             {{ .Values.global.image.repository }}/volume-provisioner:{{ .Values.tag }}

@@ -1,0 +1,36 @@
+{{- if not .Values.tags.work }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cluster-agent
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-agent-cr
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-agent-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-agent-cr
+subjects:
+  - kind: ServiceAccount
+    name: cluster-agent
+    namespace: {{ .Values.global.namespace | default "erda-system" }}
+{{- end }}

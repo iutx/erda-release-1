@@ -10,4 +10,4 @@ spec:
       protocol: TCP
       targetPort: 3082
   selector:
-    app.kubernetes.io/name: kms
+    app.kubernetes.io/name: erda-kms

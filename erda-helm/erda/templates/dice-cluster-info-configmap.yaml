@@ -4,34 +4,44 @@ metadata:
   name: dice-cluster-info
   namespace: {{ .Values.global.namespace | default "erda-system" }}
 data:
-  CLUSTER_DNS: 10.96.0.3
   DICE_CLUSTER_NAME:  {{ .Values.erda.clusterName }}
-  DICE_CLUSTER_TYPE: kubernetes
+  DICE_CLUSTER_TYPE: {{ .Values.erda.clusterConfig.clusterType }}
+  {{- if .Values.tags.work }}
+  DICE_IS_EDGE: "true"
+  {{- else }}
+  DICE_IS_EDGE: "false"
+  {{- end }}
+  DICE_PROTOCOL:  {{ .Values.erda.clusterConfig.protocol }}
   DICE_HTTPS_PORT: "443"
   DICE_HTTP_PORT: "80"
-  DICE_INSIDE: "false"
-  DICE_IS_EDGE: "false"
-  DICE_PROTOCOL:  {{ .Values.erda.clusterConfig.protocol }}
   DICE_ROOT_DOMAIN: {{ .Values.erda.domain }}
   DICE_SIZE:  {{ .Values.global.size }}
   DICE_SSH_PASSWORD:  {{ .Values.erda.clusterConfig.ssh.password |default "123123" | quote }}
   DICE_SSH_USER:  {{ .Values.erda.clusterConfig.ssh.user }}
   DICE_STORAGE_MOUNTPOINT: /netdata
-  DICE_VERSION: "1.0.0"
+  DICE_VERSION: "1.1.0"
+  {{- if eq .Values.global.size "prod" }}
+  ETCD_ENDPOINTS: https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379,https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379,https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
+  ETCD_MONITOR_URL: http://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381,http://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381,http://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381
+  {{- else }}
   ETCD_ENDPOINTS: https://erda-etcd.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
   ETCD_MONITOR_URL: http://erda-etcd.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381
+  {{- end }}
   GLUSTERFS_MONITOR_URL: ""
   IS_FDP_CLUSTER: "false"
   ISTIO_ALIYUN: "false"
-  ISTIO_INSTALLED: "true"
+  ISTIO_INSTALLED: "false"
   ISTIO_VERSION: 1.1.4
-  KUBERNETES_VENDOR: dice
-  KUBERNETES_VERSION: {{ .Values.erda.clusterConfig.kubernetes.version }}
+  {{/*  TODO: Deprecated */}}
+  CLUSTER_DNS: 10.96.0.3
+  DICE_INSIDE: "false"
   {{- if .Values.erda.clusterConfig.kubernetes.lb }}
   LB_ADDR: {{ .Values.erda.clusterConfig.kubernetes.lb }}
   LB_MONITOR_URL: http://{{ .Values.erda.clusterConfig.kubernetes.lb }}
   {{- end }}
-  MASTER_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}
-  MASTER_MONITOR_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}
-  MASTER_VIP_ADDR: {{ .Values.erda.clusterConfig.kubernetes.mastervip }}
-  MASTER_VIP_URL: https://{{ .Values.erda.clusterConfig.kubernetes.mastervip }}
+  {{/*  KUBERNETES_VENDOR: dice*/}}
+  {{/*  KUBERNETES_VERSION: {{ .Values.erda.clusterConfig.kubernetes.version }}*/}}
+  {{/*  MASTER_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}*/}}
+  {{/*  MASTER_MONITOR_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}*/}}
+  {{/*  MASTER_VIP_ADDR: {{ .Values.erda.clusterConfig.kubernetes.mastervip }}*/}}
+  {{/*  MASTER_VIP_URL: https://{{ .Values.erda.clusterConfig.kubernetes.mastervip }}*/}}

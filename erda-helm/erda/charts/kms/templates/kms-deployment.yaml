@@ -4,7 +4,7 @@ metadata:
   name: erda-kms
   namespace: {{ .Values.global.namespace | default "erda-system" }}
   labels:
-    app.kubernetes.io/name: kms
+    app.kubernetes.io/name: erda-kms
 spec:
   {{- if eq .Values.global.size "prod" }}
   replicas: {{ .Values.replicas | default 2 }}
@@ -89,4 +89,4 @@ spec:
       volumes:
         - name: etcd-client-secret
           secret:
-            secretName: erda-etcd-client-secret
+            secretName: etcd-client-secret

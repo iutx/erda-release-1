@@ -17,14 +17,24 @@ spec:
       labels:
         app: erda-operator
     spec:
-      serviceAccountName: erda-operator
+      serviceAccountName: dice-operator
       containers:
-      - image: {{ .Values.global.image.repository }}/erda-operator:{{ .Values.erda.operator.tag }}
+      - image: {{ .Values.global.image.repository }}/dice-operator:{{ .Values.erda.operator.tag }}
         imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
         name: erda-operator
         env:
-        - name: ENABLE_AFFINITY
+        - name: ENABLE_SPECIFIED_NAMESPACE
+          value: {{ .Values.global.namespace | default "erda-system" }}
+        - name: ENABLE_CONFIGMAP_NAMESPACE
+          value: {{ .Values.global.namespace | default "erda-system" }}
+        {{- if .Values.tags.work }}
+        - name: ENABLE_ETCD_SECRET
           value: disable
+        {{- end }}
+        - name:  INJECT_CLUSTER_INFO
+          value: "false"
+        - name: ENABLE_AFFINITY
+          value: "false"
         - name: ERDA_CLUSTER_INFO
           value: dice-cluster-info
         - name: ERDA_ADDON_INFO
