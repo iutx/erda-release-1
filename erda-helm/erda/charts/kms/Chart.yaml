@@ -2,7 +2,7 @@ apiVersion: v2
 name: kms
 description: A Helm chart for kms
 type: application
-version: 1.0.0-20200608-f11445f
+version: 1.0.0
 keywords:
   - kms
 sources:

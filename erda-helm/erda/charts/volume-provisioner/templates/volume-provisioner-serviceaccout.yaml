@@ -2,4 +2,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: erda-volume-provisioner
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}

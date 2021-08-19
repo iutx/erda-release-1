@@ -5,7 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: erda-volume-provisioner
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: erda-volume-provisioner

@@ -6,7 +6,7 @@ metadata:
   labels:
     app: erda-zookeeper-1
   name: erda-zookeeper-1
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -66,7 +66,7 @@ spec:
           - name: ZOO_PORT
             value: '2181'
           - name: ZOO_SERVERS
-            value: server.2=erda-zookeeper-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2888:3888 server.3=erda-zookeeper-3.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2888:3888 server.1=0.0.0.0:2888:3888
+            value: server.2=erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.3=erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.1=0.0.0.0:2888:3888
           - name: ZOO_SYNC_LIMIT
             value: '2'
           - name: ZOO_TICK_TIME
@@ -86,10 +86,10 @@ spec:
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu | default "0.1" | quote }}
-              memory: {{ .Values.resources.requests.memory | default "10Mi" | quote }}
+              memory: {{ .Values.resources.requests.memory | default "256Mi" | quote }}
             limits:
               cpu: {{ .Values.resources.limits.cpu |  default "1" | quote }}
-              memory: {{ .Values.resources.limits.memory | default "400Mi" | quote }}
+              memory: {{ .Values.resources.limits.memory | default "512Mi" | quote }}
           volumeMounts:
           - name: erda-zookeeper-1
             mountPath: /data
@@ -125,7 +125,7 @@ metadata:
   labels:
     app: erda-zookeeper-2
   name: erda-zookeeper-2
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -185,7 +185,7 @@ spec:
           - name: ZOO_PORT
             value: '2181'
           - name: ZOO_SERVERS
-            value: server.1=erda-zookeeper-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2888:3888 server.3=erda-zookeeper-3.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2888:3888 server.2=0.0.0.0:2888:3888
+            value: server.1=erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.3=erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.2=0.0.0.0:2888:3888
           - name: ZOO_SYNC_LIMIT
             value: '2'
           - name: ZOO_TICK_TIME
@@ -205,10 +205,10 @@ spec:
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu | default "0.1" | quote }}
-              memory: {{ .Values.resources.requests.memory | default "10Mi" | quote }}
+              memory: {{ .Values.resources.requests.memory | default "256Mi" | quote }}
             limits:
               cpu: {{ .Values.resources.limits.cpu |  default "1" | quote }}
-              memory: {{ .Values.resources.limits.memory | default "400Mi" | quote }}
+              memory: {{ .Values.resources.limits.memory | default "512Mi" | quote }}
           volumeMounts:
           - name: erda-zookeeper-2
             mountPath: /data
@@ -244,7 +244,7 @@ metadata:
   labels:
     app: erda-zookeeper-3
   name: erda-zookeeper-3
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -304,7 +304,7 @@ spec:
           - name: ZOO_PORT
             value: '2181'
           - name: ZOO_SERVERS
-            value: server.1=erda-zookeeper-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2888:3888 server.2=erda-zookeeper-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2888:3888 server.3=0.0.0.0:2888:3888
+            value: server.1=erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.2=erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.3=0.0.0.0:2888:3888
           - name: ZOO_SYNC_LIMIT
             value: '2'
           - name: ZOO_TICK_TIME
@@ -324,10 +324,10 @@ spec:
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu | default "0.1" | quote }}
-              memory: {{ .Values.resources.requests.memory | default "10Mi" | quote }}
+              memory: {{ .Values.resources.requests.memory | default "256Mi" | quote }}
             limits:
               cpu: {{ .Values.resources.limits.cpu |  default "1" | quote }}
-              memory: {{ .Values.resources.limits.memory | default "400Mi" | quote }}
+              memory: {{ .Values.resources.limits.memory | default "512Mi" | quote }}
           volumeMounts:
           - name: erda-zookeeper-3
             mountPath: /data
@@ -361,7 +361,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: erda-zookeeper-1
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: erda-zookeeper-1-tcp-2181
@@ -380,7 +380,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: erda-zookeeper-2
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: erda-zookeeper-2-tcp-2181
@@ -399,7 +399,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: erda-zookeeper-3
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: erda-zookeeper-3-tcp-2181

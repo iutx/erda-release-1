@@ -1,21 +1,21 @@
-apiVersion: dice.terminus.io/v1beta1
-kind: Dice
+apiVersion: erda.terminus.io/v1beta1
+kind: Erda
 metadata:
-  name: dice
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  name: erda
+  namespace: {{ .Release.Namespace }}
 spec:
   {{- if not .Values.tags.work }}
   customDomain:
-    openapi: openapi.{{ .Values.erda.domain }}
-    ui: {{ .Values.erda.domain }}, *.{{ .Values.erda.domain }}
+    openapi: openapi.{{ .Values.global.domain }}
+    ui: {{ .Values.global.domain }}, *.{{ .Values.global.domain }}
   {{- else }}
   mainPlatform:
-    collector: {{ .Values.erda.masterCluster.protocol }}://collector.{{ .Values.erda.masterCluster.domain }}
-    openapi: {{ .Values.erda.masterCluster.protocol }}://openapi.{{ .Values.erda.masterCluster.domain }}
-    cluster-dialer: {{ .Values.erda.masterCluster.protocol }}://cluster-dialer.{{ .Values.erda.masterCluster.domain }}
+    collector: {{ .Values.erda.masterCluster.protocol | default "https" }}://collector.{{ .Values.erda.masterCluster.domain }}
+    openapi: {{ .Values.erda.masterCluster.protocol | default "https" }}://openapi.{{ .Values.erda.masterCluster.domain }}
+    cluster-dialer: {{ .Values.erda.masterCluster.protocol | default "https" }}://cluster-dialer.{{ .Values.erda.masterCluster.domain }}
   {{- end }}
-  cookieDomain: {{ .Values.erda.domain }}
-  platformDomain: {{ .Values.erda.domain }}
+  cookieDomain: {{ .Values.global.domain }}
+  platformDomain: {{ .Values.global.domain }}
   diceCluster: {{ .Values.erda.clusterName }}
   size: 'test'
   initJobs:
@@ -31,7 +31,7 @@ spec:
           MIGRATION_MYSQL_PASSWORD: {{ .Values.mysql.custom.password }}
           MIGRATION_MYSQL_DBNAME: {{ .Values.mysql.custom.database }}
           {{- else }}
-          MIGRATION_MYSQL_HOST: erda-mysql.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local
+          MIGRATION_MYSQL_HOST: erda-mysql.{{ .Release.Namespace }}.svc.cluster.local
           MIGRATION_MYSQL_PORT: "3306"
           MIGRATION_MYSQL_USERNAME:  {{ .Values.mysql.user }}
           MIGRATION_MYSQL_PASSWORD: {{ .Values.mysql.password }}
@@ -39,11 +39,11 @@ spec:
           {{- end }}
           MIGRATION_DEBUGSQL: "false"
           MIGRATION_ERDA_LINT: "true"
-        image: registry.erda.cloud/erda/init-image:20210730-ca1833c
+        image:
+          {{ .Values.global.image.repository }}/init-image:{{ .Values.erda.tags.init }}
         resources:
           cpu: 0.5
           mem: 128
-
 
   dice:
     version: "2.0"
@@ -56,7 +56,8 @@ spec:
     services:
       {{- if not .Values.tags.work }}
       action-runner-scheduler:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/action-runner-scheduler
         ports:
           - port: 9500
@@ -65,9 +66,13 @@ spec:
             expose: false
             default: false
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.3
+          memory:
+          cpu: {{ .Values.erda.component.actionRunnerScheduler.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.actionRunnerScheduler.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.actionRunnerScheduler.resources.max_cpu | default "0.3" }}
+          {{- if .Values.erda.component.actionRunnerScheduler.resources.max_mem }}
+          max_mem: {{ .Values.erda.component.actionRunnerScheduler.resources.max_mem }}
+          {{- end }}
           network:
             mode: container
         deployments:
@@ -81,7 +86,8 @@ spec:
             duration: 120
           exec: { }
       admin:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/admin
         ports:
           - port: 9095
@@ -92,14 +98,23 @@ spec:
         envs:
           DEBUG: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.2
-          max_mem: 256
+          cpu: {{ .Values.erda.component.admin.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.admin.resources.mem | default "128" }}
+          {{- if eq .Values.global.size "demo" }}
+          max_cpu: {{ .Values.erda.component.admin.resources.max_cpu | default "0.1" }}
+          max_mem: {{ .Values.erda.component.admin.resources.max_mem | default "128" }}
+          {{- else }}
+          max_cpu: {{ .Values.erda.component.admin.resources.max_cpu | default "0.2" }}
+          max_mem: {{ .Values.erda.component.admin.resources.max_mem | default "256" }}
+          {{- end }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.admin.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.admin.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
@@ -109,7 +124,8 @@ spec:
             duration: 120
           exec: { }
       cluster-dialer:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/cluster-dialer
         ports:
           - port: 80
@@ -120,10 +136,10 @@ spec:
         envs:
           DEBUG: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 2
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.clusterDialer.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.clusterDialer.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.clusterDialer.resources.max_cpu | default "2" }}
+          max_mem: {{ .Values.erda.component.clusterDialer.resources.max_mem | default "2048" }}
           network:
             mode: container
         deployments:
@@ -136,7 +152,8 @@ spec:
           http: { }
           exec: { }
       cluster-manager:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/cluster-manager
         ports:
           - port: 9094
@@ -147,21 +164,31 @@ spec:
         envs:
           DEBUG: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.2
-          max_mem: 256
+          cpu: {{ .Values.erda.component.clusterManageer.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.clusterManageer.resources.mem | default "128" }}
+          {{- if eq .Values.global.size "demo" }}
+          max_cpu: {{ .Values.erda.component.clusterManageer.resources.max_cpu | default "0.1" }}
+          max_mem: {{ .Values.erda.component.clusterManageer.resources.max_mem | default "128" }}
+          {{- else }}
+          max_cpu: {{ .Values.erda.component.clusterManageer.resources.max_cpu | default "0.2" }}
+          max_mem: {{ .Values.erda.component.clusterManageer.resources.max_mem | default "256" }}
+          {{- end }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.clusterManageer.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.clusterManageer.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
           http: { }
           exec: { }
       cmp:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/cmp
         ports:
           - port: 9027
@@ -171,24 +198,32 @@ spec:
             default: false
         envs:
           ERDA_HELM_CHART_VERSION: 1.1.0
-          ERDA_NAMESPACE: default
+          ERDA_NAMESPACE: {{ .Release.Namespace }}
           UC_CLIENT_ID: dice
           UC_CLIENT_SECRET: secret
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.2
+          cpu: {{ .Values.erda.component.cmp.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.cmp.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.cmp.resources.max_cpu | default "0.2" }}
+          {{- if .Values.erda.component.cmp.resources.max_mem }}
+          max_mem: {{ .Values.erda.component.cmp.resources.max_mem }}
+          {{- end }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.cmp.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.cmp.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
           http: { }
           exec: { }
       collector:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/collector
         ports:
           - port: 7076
@@ -205,14 +240,18 @@ spec:
           COLLECTOR_BROWSER_SAMPLING_RATE: "100"
           COLLECTOR_ENABLE: "true"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 1024
+          cpu: {{ .Values.erda.component.collector.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.collector.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.collector.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.collector.resources.max_mem | default "1024" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.collector.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.collector.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: spot-v2
         expose:
@@ -224,7 +263,8 @@ spec:
             duration: 120
           exec: { }
       core-services:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/core-services
         ports:
           - port: 9526
@@ -244,17 +284,21 @@ spec:
           UC_CLIENT_ID: dice
           UC_CLIENT_SECRET: secret
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.3
-          max_mem: 512
+          cpu: {{ .Values.erda.component.coreServices.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.coreServices.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.coreServices.resources.max_cpu | default "0.3" }}
+          max_mem: {{ .Values.erda.component.coreServices.resources.max_mem | default "512" }}
           network:
             mode: container
         binds:
           - /netdata/avatars:/avatars:rw
           - /netdata/dice/cmdb/files:/files:rw
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.coreServices.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.coreServices.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
@@ -264,7 +308,8 @@ spec:
             duration: 120
           exec: { }
       dicehub:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/dicehub
         ports:
           - port: 10000
@@ -277,14 +322,18 @@ spec:
           RELEASE_GC_SWITCH: "true"
           RELEASE_MAX_TIME_RESERVED: "72"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.15
-          max_mem: 1024
+          cpu: {{ .Values.erda.component.dicehub.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.dicehub.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.dicehub.resources.max_cpu | default "0.15" }}
+          max_mem: {{ .Values.erda.component.dicehub.resources.max_mem | default "1024" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.dicehub.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.dicehub.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
@@ -294,7 +343,8 @@ spec:
             duration: 120
           exec: { }
       dop:
-        image: registry.cn-shanghai.aliyuncs.com/viper/dop:v1.1
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/dop
         ports:
           - port: 9527
@@ -306,10 +356,10 @@ spec:
           DEBUG: "true"
           MONITOR_ADDR: monitor:7096
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.dop.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.dop.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.dop.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.dop.resources.max_mem | default "2048" }}
           network:
             mode: container
         deployments:
@@ -322,30 +372,9 @@ spec:
             path: /_api/health
             duration: 120
           exec: { }
-      ecp:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
-        cmd: /app/ecp
-        ports:
-          - port: 9029
-            protocol: TCP
-            l4_protocol: TCP
-            expose: false
-            default: false
-        resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.2
-          network:
-            mode: container
-        deployments:
-          replicas: 1
-          labels:
-            GROUP: dice
-        health_check:
-          http: { }
-          exec: { }
       eventbox:
-        image: {{ .Values.global.image.repository }}/erda:4.0-20210521-3a995ee
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/eventbox
         ports:
           - port: 9528
@@ -356,10 +385,10 @@ spec:
         envs:
           DEBUG: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 2
-          max_mem: 2560
+          cpu: {{ .Values.erda.component.eventbox.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.eventbox.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.eventbox.resources.max_cpu | default "2" }}
+          max_mem: {{ .Values.erda.component.eventbox.resources.max_mem | default "2560" }}
           network:
             mode: container
         deployments:
@@ -373,7 +402,8 @@ spec:
             duration: 120
           exec: { }
       gittar:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/gittar
         ports:
           - port: 5566
@@ -389,10 +419,10 @@ spec:
           UC_CLIENT_ID: dice
           UC_CLIENT_SECRET: secret
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 1536
+          cpu: {{ .Values.erda.component.gittar.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.gittar.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.gittar.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.gittar.resources.max_mem | default "1536" }}
           network:
             mode: container
         binds:
@@ -407,7 +437,8 @@ spec:
           http: { }
           exec: { }
       hepa:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/hepa
         ports:
           - port: 8080
@@ -416,13 +447,24 @@ spec:
             expose: true
             default: false
         resources:
-          cpu: 0.1
-          mem: 512
-          max_cpu: 0.5
+          cpu: {{ .Values.erda.component.hepa.resources.cpu | default "0.1" }}
+          {{- if eq .Values.global.size "demo" }}
+          mem: {{ .Values.erda.component.hepa.resources.mem | default "128" }}
+          {{- else }}
+          mem: {{ .Values.erda.component.hepa.resources.mem | default "512" }}
+          {{- end }}
+          max_cpu: {{ .Values.erda.component.hepa.resources.max_cpu | default "0.5" }}
+          {{- if .Values.erda.component.hepa.resources.max_mem }}
+          max_mem: {{ .Values.erda.component.hepa.resources.max_mem }}
+          {{- end }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.hepa.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.hepa.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: addons
         expose:
@@ -434,7 +476,8 @@ spec:
             duration: 120
           exec: { }
       monitor:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/monitor
         ports:
           - port: 7096
@@ -453,14 +496,18 @@ spec:
             expose: false
             default: false
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 512
+          cpu: {{ .Values.erda.component.monitor.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.monitor.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.monitor.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.monitor.resources.max_mem | default "512" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.monitor.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.monitor.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: spot-v2
         health_check:
@@ -470,7 +517,8 @@ spec:
             duration: 120
           exec: { }
       msp:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/msp
         ports:
           - port: 8080
@@ -491,14 +539,18 @@ spec:
         envs:
           GOLANG_PROTOBUF_REGISTRATION_CONFLICT: ignore
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 512
+          cpu: {{ .Values.erda.component.msp.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.msp.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.msp.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.msp.resources.max_mem | default "512" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.msp.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.msp.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: msp
         health_check:
@@ -508,7 +560,8 @@ spec:
             duration: 120
           exec: { }
       openapi:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/openapi
         ports:
           - port: 9529
@@ -519,14 +572,18 @@ spec:
         envs:
           CREATE_ORG_ENABLED: "true"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.5
-          max_mem: 512
+          cpu: {{ .Values.erda.component.openapi.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.openapi.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.openapi.resources.max_cpu | default "0.5" }}
+          max_mem: {{ .Values.erda.component.openapi.resources.max_mem | default "512" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.openapi.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.openapi.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         expose:
@@ -538,7 +595,8 @@ spec:
             duration: 120
           exec: { }
       orchestrator:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/orchestrator
         ports:
           - port: 8081
@@ -551,10 +609,10 @@ spec:
           MSP_ADDR: msp:8080
           TENANT_GROUP_KEY: 58dcbf490ef3
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 256
+          cpu: {{ .Values.erda.component.orchestrator.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.orchestrator.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.orchestrator.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.orchestrator.resources.max_mem | default "256" }}
           network:
             mode: container
         deployments:
@@ -568,7 +626,8 @@ spec:
             duration: 120
           exec: { }
       pipeline:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/pipeline
         ports:
           - port: 3081
@@ -582,10 +641,10 @@ spec:
           GIT_INNER_USER_PASSWORD: "123456"
           PIPELINE_STORAGE_URL: file:///devops/storage
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 1536
+          cpu: {{ .Values.erda.component.pipeline.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.pipeline.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.pipeline.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.pipeline.resources.max_mem | default "1536" }}
           network:
             mode: container
         deployments:
@@ -599,7 +658,8 @@ spec:
             duration: 120
           exec: { }
       scheduler:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/scheduler
         ports:
           - port: 9091
@@ -608,18 +668,28 @@ spec:
             expose: false
             default: false
         envs:
+          ENABLE_SPECIFIED_K8S_NAMESPACE: {{ .Release.Namespace }}
           CMDB_CONTAINER_TOPIC: spot-metaserver_container
           CMDB_GROUP: spot_cmdb_group2
           DEBUG: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.scheduler.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.scheduler.resources.mem | default "128" }}
+          {{- if eq .Values.global.size "demo" }}
+          max_cpu: {{ .Values.erda.component.scheduler.resources.max_cpu | default "0.5" }}
+          max_mem: {{ .Values.erda.component.scheduler.resources.max_mem | default "512" }}
+          {{- else }}
+          max_cpu: {{ .Values.erda.component.scheduler.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.scheduler.resources.max_mem | default "2048" }}
+          {{- end }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.scheduler.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.scheduler.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
@@ -629,7 +699,8 @@ spec:
             duration: 120
           exec: { }
       streaming:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/streaming
         ports:
           - port: 7091
@@ -655,14 +726,18 @@ spec:
           TRACE_GROUP_ID: spot-monitor-trace
           TRACE_TTL: 168h
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1.5
-          max_mem: 1024
+          cpu: {{ .Values.erda.component.streaming.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.streaming.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.streaming.resources.max_cpu | default "1.5" }}
+          max_mem: {{ .Values.erda.component.streaming.resources.max_mem | default "1024" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.streaming.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.streaming.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: spot-v2
         health_check:
@@ -672,7 +747,8 @@ spec:
             duration: 120
           exec: { }
       uc-adaptor:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/uc-adaptor
         ports:
           - port: 12580
@@ -688,13 +764,20 @@ spec:
           UC_CLIENT_ID: dice
           UC_CLIENT_SECRET: secret
         resources:
-          cpu: 0.1
-          mem: 64
-          max_cpu: 0.2
+          cpu: {{ .Values.erda.component.ucAdaptor.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.ucAdaptor.resources.mem | default "64" }}
+          max_cpu: {{ .Values.erda.component.ucAdaptor.resources.max_cpu | default "0.2" }}
+          {{- if .Values.erda.component.ucAdaptor.resources.max_mem }}
+          max_mem: {{ .Values.erda.component.ucAdaptor.resources.max_mem }}
+          {{- end }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.ucAdaptor.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.ucAdaptor.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: devops
         expose:
@@ -707,15 +790,16 @@ spec:
           exec: { }
       {{- end }}
       cluster-agent:
-        image: registry.erda.cloud/erda/erda:1.1-20210801-b21ed4e
+        image:
+          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
         cmd: /app/cluster-agent
         envs:
           DEBUG: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 1024
+          cpu: {{ .Values.erda.component.clusterAgent.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.clusterAgent.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.clusterAgent.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.clusterAgent.resources.max_mem | default "1024" }}
           network:
             mode: container
         deployments:
@@ -737,7 +821,8 @@ spec:
     envs: { }
     services:
       ui:
-        image: registry.erda.cloud/erda/ui-ce:1.1-20210801-4d7018ba6a91ad4d334b7a23caf0889cc240f4ea
+        image:
+          {{ .Values.global.image.repository }}/ui-ce:{{ .Values.erda.tags.ui }}
         ports:
           - port: 80
             protocol: TCP
@@ -759,14 +844,18 @@ spec:
           UC_ADDR: uc:8080
           UC_PUBLIC_URL: ""
         resources:
-          cpu: 0.2
-          mem: 256
-          max_cpu: 1
-          max_mem: 512
+          cpu: {{ .Values.erda.component.ui.resources.cpu | default "0.2" }}
+          mem: {{ .Values.erda.component.ui.resources.mem | default "256" }}
+          max_cpu: {{ .Values.erda.component.ui.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.ui.resources.max_mem | default "512" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.ui.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.ui.replicas | default "2" }}
+          {{- end }}
         expose:
           - 80
         health_check:
@@ -803,7 +892,8 @@ spec:
       TASK_MANAGER_NUMBER_OF_TASK_SLOTS: "2"
     services:
       analyzer-alert:
-        image: registry.erda.cloud/erda/erda-analyzer-alert:1.1.0-20210801-a274c27
+        image:
+          {{ .Values.global.image.repository }}/erda-analyzer-alert:{{ .Values.erda.tags.analyzer.alert }}
         cmd: flink-entrypoint.sh jobcluster --job-classname cloud.erda.analyzer.alert.Main
         ports:
           - port: 8081
@@ -839,10 +929,10 @@ spec:
           STREAM_STATE_BACKEND: jobmanager
           STREAM_STATE_BACKEND_FS_PATH: file:///data/checkpoints
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.analyzerAlert.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.analyzerAlert.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.analyzerAlert.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.analyzerAlert.resources.max_mem | default "2048" }}
           network:
             mode: container
         binds:
@@ -856,7 +946,8 @@ spec:
             duration: 120
           exec: { }
       analyzer-alert-task:
-        image: registry.erda.cloud/erda/erda-analyzer-alert:1.1.0-20210801-a274c27
+        image:
+          {{ .Values.global.image.repository }}/erda-analyzer-alert:{{ .Values.erda.tags.analyzer.alert }}
         cmd: flink-entrypoint.sh taskmanager
         ports:
           - port: 6121
@@ -878,10 +969,10 @@ spec:
           JOB_MANAGER_NAME: analyzer_alert
           TASK_MANAGER_MEMORY_PROCESS_SIZE: 1843m
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.analyzerAlertTask.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.analyzerAlertTask.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.analyzerAlertTask.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.analyzerAlertTask.resources.max_mem | default "2048" }}
           network:
             mode: container
         binds:
@@ -894,7 +985,8 @@ spec:
             cmd: ps aux | grep TaskManagerRunner || exit 1
             duration: 120
       analyzer-error-insight:
-        image: registry.erda.cloud/erda/erda-analyzer-error-insight:1.1.0-20210801-a274c27
+        image:
+          {{ .Values.global.image.repository }}/erda-analyzer-error-insight:{{ .Values.erda.tags.analyzer.error }}
         cmd: flink-entrypoint.sh jobcluster --job-classname cloud.erda.analyzer.errorInsight.Main
         ports:
           - port: 8081
@@ -926,10 +1018,10 @@ spec:
           STREAM_PARALLELISM_OPERATOR: "2"
           STREAM_PARALLELISM_OUTPUT: "2"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.analyzerErrorInsight.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.analyzerErrorInsight.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.analyzerErrorInsight.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.analyzerErrorInsight.resources.max_mem | default "2048" }}
           network:
             mode: container
         binds:
@@ -943,7 +1035,8 @@ spec:
             duration: 120
           exec: { }
       analyzer-error-insight-task:
-        image: registry.erda.cloud/erda/erda-analyzer-error-insight:1.1.0-20210801-a274c27
+        image:
+          {{ .Values.global.image.repository }}/erda-analyzer-error-insight:{{ .Values.erda.tags.analyzer.error }}
         cmd: flink-entrypoint.sh taskmanager
         ports:
           - port: 6121
@@ -965,10 +1058,10 @@ spec:
           JOB_MANAGER_NAME: analyzer_error_insight
           TASK_MANAGER_MEMORY_PROCESS_SIZE: 1843m
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.analyzerErrorInsightTask.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.analyzerErrorInsightTask.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.analyzerErrorInsightTask.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.analyzerErrorInsightTask.resources.max_mem | default "2048" }}
           network:
             mode: container
         binds:
@@ -981,7 +1074,8 @@ spec:
             cmd: ps aux | grep TaskManagerRunner || exit 1
             duration: 120
       analyzer-metrics:
-        image: registry.erda.cloud/erda/erda-analyzer-metrics:1.1.0-20210801-a274c27
+        image:
+          {{ .Values.global.image.repository }}/erda-analyzer-metrics:{{ .Values.erda.tags.analyzer.metrics }}
         cmd: flink-entrypoint.sh jobcluster --job-classname cloud.erda.analyzer.metrics.Main
         ports:
           - port: 8081
@@ -1018,10 +1112,10 @@ spec:
           STREAM_STATE_BACKEND: jobmanager
           STREAM_STATE_BACKEND_FS_PATH: file:///data/checkpoints
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.analyzerMetrics.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.analyzerMetrics.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.analyzerMetrics.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.analyzerMetrics.resources.max_mem | default "2048" }}
           network:
             mode: container
         binds:
@@ -1035,7 +1129,8 @@ spec:
             duration: 120
           exec: { }
       analyzer-metrics-task:
-        image: registry.erda.cloud/erda/erda-analyzer-metrics:1.1.0-20210801-a274c27
+        image:
+          {{ .Values.global.image.repository }}/erda-analyzer-metrics:{{ .Values.erda.tags.analyzer.metrics }}
         cmd: flink-entrypoint.sh taskmanager
         ports:
           - port: 6121
@@ -1057,10 +1152,10 @@ spec:
           JOB_MANAGER_NAME: analyzer_metrics
           TASK_MANAGER_MEMORY_PROCESS_SIZE: 1843m
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.analyzerMetricsTask.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.analyzerMetricsTask.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.analyzerMetricsTask.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.analyzerMetricsTask.resources.max_mem | default "2048" }}
           network:
             mode: container
         binds:
@@ -1081,7 +1176,8 @@ spec:
     envs: { }
     services:
       uc:
-        image: registry.erda.cloud/erda/uc:dice-4.0-20210630-f4d63b99
+        image:
+          {{ .Values.global.image.repository }}/uc:{{ .Values.erda.tags.uc }}
         ports:
           - port: 8080
             protocol: TCP
@@ -1089,19 +1185,23 @@ spec:
             expose: true
             default: false
         envs:
-          REDIRECT_URL_WHITE_LIST: http://uc.{{ .Values.erda.domain }}/oauth/authorize,http://uc.{{ .Values.erda.domain }}/oauth/authorize,https://uc.{{ .Values.erda.domain }}/oauth/authorize
+          REDIRECT_URL_WHITE_LIST: http://uc.{{ .Values.global.domain }}/oauth/authorize,http://uc.{{ .Values.global.domain }}/oauth/authorize,https://uc.{{ .Values.global.domain }}/oauth/authorize
           SPRING_PROFILES_ACTIVE: docker
           SMS_ENABLE_NOTICE_MOCK: "false"
           JAVA_OPTS: -Xms1433m -Xmx1433m
         resources:
-          cpu: 0.01
-          mem: 100
-          max_cpu: 1
-          max_mem: 2048
+          cpu: {{ .Values.erda.component.uc.resources.cpu | default "0.01" }}
+          mem: {{ .Values.erda.component.uc.resources.mem | default "100" }}
+          max_cpu: {{ .Values.erda.component.uc.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.uc.resources.max_mem | default "2048" }}
           network:
             mode: container
         deployments:
-          replicas: 1
+          {{- if eq .Values.global.size "demo" }}
+          replicas: {{ .Values.erda.component.uc.replicas | default "1" }}
+          {{- else }}
+          replicas: {{ .Values.erda.component.uc.replicas | default "2" }}
+          {{- end }}
           labels:
             GROUP: dice
         health_check:
@@ -1112,7 +1212,6 @@ spec:
         expose:
           - 8080
     addons: { }
-  spotMonitor:
   {{- end }}
 
   spotTelegraf:
@@ -1122,7 +1221,8 @@ spec:
     envs: { }
     services:
       telegraf:
-        image: registry.erda.cloud/erda/terminus/telegraf:4.0-20210801-ee49757
+        image:
+          {{ .Values.global.image.repository }}/telegraf:{{ .Values.erda.tags.telegraf }}
         ports:
           - port: 8090
             protocol: TCP
@@ -1147,10 +1247,10 @@ spec:
           SADF_PATH: /usr/bin/sadf
           TELEGRAF_PPROF_PORT: "6962"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.5
-          max_mem: 512
+          cpu: {{ .Values.erda.component.telegraf.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.telegraf.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.telegraf.resources.max_cpu | default "0.5" }}
+          max_mem: {{ .Values.erda.component.telegraf.resources.max_mem | default "512" }}
           network:
             mode: host
         binds:
@@ -1169,7 +1269,8 @@ spec:
             cmd: ps aux | grep telegraf || exit 1
             duration: 120
       telegraf-app:
-        image: registry.erda.cloud/erda/terminus/telegraf:4.0-20210801-ee49757
+        image:
+          {{ .Values.global.image.repository }}/telegraf:{{ .Values.erda.tags.telegraf }}
         ports:
           - port: 8091
             protocol: TCP
@@ -1183,10 +1284,10 @@ spec:
           TELEGRAF_CONFIG: telegraf-app
           TELEGRAF_PPROF_PORT: "6963"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 0.5
-          max_mem: 512
+          cpu: {{ .Values.erda.component.telegrafApp.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.telegrafApp.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.telegrafApp.resources.max_cpu | default "0.5" }}
+          max_mem: {{ .Values.erda.component.telegrafApp.resources.max_mem | default "512" }}
           network:
             mode: host
         binds:
@@ -1203,7 +1304,8 @@ spec:
             cmd: ps aux | grep telegraf || exit 1
             duration: 120
       telegraf-platform:
-        image: registry.erda.cloud/erda/terminus/telegraf:4.0-20210801-ee49757
+        image:
+          {{ .Values.global.image.repository }}/telegraf:{{ .Values.erda.tags.telegraf }}
         ports:
           - port: 8092
             protocol: TCP
@@ -1246,10 +1348,10 @@ spec:
           TELEGRAF_PPROF_PORT: "6964"
           TERMINUS_LOG_COLLECT: "false"
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 1536
+          cpu: {{ .Values.erda.component.telegrafPlatform.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.telegrafPlatform.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.telegrafPlatform.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.telegrafPlatform.resources.max_mem | default "1536" }}
           network:
             mode: container
         binds:
@@ -1278,16 +1380,17 @@ spec:
     envs: { }
     services:
       filebeat:
-        image: registry.erda.cloud/erda/terminus/filebeat:4.0.0-20210801-02ea6b8
+        image:
+          {{ .Values.global.image.repository }}/filebeat:{{ .Values.erda.tags.filebeat }}
         envs:
           COLLECTOR_AUTH_PASSWORD: G$9767bP32drYFPWrK4XMLRMTatiM6cU
           COLLECTOR_AUTH_USERNAME: collector
           DOCKER_SOCK_PATH: unix:///rootfs/var/run/docker.sock
         resources:
-          cpu: 0.1
-          mem: 128
-          max_cpu: 1
-          max_mem: 512
+          cpu: {{ .Values.erda.component.filebeat.resources.cpu | default "0.1" }}
+          mem: {{ .Values.erda.component.filebeat.resources.mem | default "128" }}
+          max_cpu: {{ .Values.erda.component.filebeat.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.filebeat.resources.max_mem | default "512" }}
           network:
             mode: container
         binds:
@@ -1311,4 +1414,3 @@ spec:
         options:
           version: 1.0.0
     values: { }
-

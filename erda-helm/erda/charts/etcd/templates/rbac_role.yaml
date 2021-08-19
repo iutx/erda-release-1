@@ -4,7 +4,7 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install
   name: erda-etcd
-  namespace:  {{ .Values.global.namespace | default "erda-system" }}
+  namespace:  {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
@@ -16,11 +16,11 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install
   name: erda-etcd
-  namespace:  {{ .Values.global.namespace | default "erda-system" }}
+  namespace:  {{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
     name: erda-etcd
-    namespace: {{ .Values.global.namespace | default "erda-system" }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: erda-etcd
@@ -32,6 +32,6 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install
   name: erda-etcd
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: erda-etcd

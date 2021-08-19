@@ -4,7 +4,7 @@ metadata:
   labels:
     dice/addon: erda-registry
   name: erda-registry
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -73,6 +73,17 @@ spec:
             periodSeconds: 15
             successThreshold: 1
             failureThreshold: 9
+      {{- if .Values.custom.nodeName }}
+      hostNetwork: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: [{{ .Values.custom.nodeName }}]
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: erda-sonar
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: erda-sonar-tcp-9000

@@ -2,7 +2,7 @@ apiVersion: v2
 name: volume-provisioner
 description: A Helm chart for volume-provisioner
 type: application
-version: 1.0.0-20210416-1a3758f
+version: 1.0.0
 keywords:
   - volume-provisioner
   - csi

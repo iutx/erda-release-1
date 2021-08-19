@@ -2,7 +2,7 @@ apiVersion: databases.spotahome.com/v1
 kind: RedisFailover
 metadata:
   name: erda-redis
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   sentinel:
     image: {{ .Values.global.image.repository }}/addon-redis:{{ .Values.redisFailover.tag }}

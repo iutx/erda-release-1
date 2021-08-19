@@ -4,7 +4,7 @@ metadata:
   labels:
     dice/addon: erda-elasticsearch
   name: erda-elasticsearch
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   {{- if eq .Values.global.size "demo" }}

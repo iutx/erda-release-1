@@ -2,14 +2,40 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dice-addons-info
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 data:
-  CASSANDRA_ADDR: erda-cassandra.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local
+  CASSANDRA_ADDR: erda-cassandra.{{ .Release.Namespace }}.svc.cluster.local
   CASSANDRA_SECURITY_ENABLE: "false"
+  {{- if eq .Values.global.size "prod" }}
+  ZOOKEEPER_ADDR: erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2181
+  BOOTSTRAP_SERVERS: erda-kafka-1.{{ .Release.Namespace }}.svc.cluster.local:9092,erda-kafka-2.{{ .Release.Namespace }}.svc.cluster.local:9092,erda-kafka-3.{{ .Release.Namespace }}.svc.cluster.local:9092
+  {{- else }}
+  ZOOKEEPER_ADDR: erda-zookeeper.{{ .Release.Namespace }}.svc.cluster.local:2181
+  BOOTSTRAP_SERVERS: erda-kafka.{{ .Release.Namespace }}.svc.cluster.local:9092
+  {{- end }}
+  {{- if not .Values.nexus.custom.address }}
+  NEXUS_ADDR: {{ .Values.nexus.defaultAddress }}
+  NEXUS_PUBLIC_URL: {{ .Values.nexus.defaultAddress }}
+  {{- else }}
+  NEXUS_ADDR: {{ .Values.nexus.custom.address }}
+  NEXUS_PUBLIC_URL: {{ .Values.nexus.custom.address }}
+  {{- if .Values.nexus.custom.username }}
+  NEXUS_USERNAME: {{ .Values.nexus.custom.username }}
+  {{- end }}
+  {{- if .Values.nexus.custom.password }}
+  NEXUS_PASSWORD: {{ .Values.nexus.custom.password }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.registry.custom.nodeName }}
+  REGISTRY_ADDR: {{ .Values.registry.custom.nodeIP }}:5000
+  {{- else }}
+  REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.cluster.local:5000
+  {{- end }}
+  {{- if not .Values.tags.work }}
   ES_SECURITY_ENABLE: "false"
   ES_SECURITY_PASSWORD: ""
   ES_SECURITY_USERNAME: ""
-  ES_URL: http://erda-elasticsearch.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:9200
+  ES_URL: http://erda-elasticsearch.{{ .Release.Namespace }}.svc.cluster.local:9200
   {{- if .Values.mysql.custom.address }}
   MYSQL_DATABASE: {{ .Values.mysql.custom.database }}
   MYSQL_HOST: {{ .Values.mysql.custom.address }}
@@ -18,42 +44,17 @@ data:
   MYSQL_USERNAME: {{ .Values.mysql.custom.user }}
   {{- else }}
   MYSQL_DATABASE: {{ .Values.mysql.database }}
-  MYSQL_HOST: erda-mysql.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local
+  MYSQL_HOST: erda-mysql.{{ .Release.Namespace }}.svc.cluster.local
   MYSQL_PASSWORD: {{ .Values.mysql.password }}
   MYSQL_PORT: "3306"
   MYSQL_USERNAME: {{ .Values.mysql.user }}
   {{- end }}
-  KMS_ADDR: erda-kms.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:3082
-  {{- if not .Values.nexus.custom.address }}
-  NEXUS_ADDR: {{ .Values.nexus.defaultAddress }}
-  NEXUS_PUBLIC_URL: {{ .Values.nexus.defaultAddress }}
-  {{- else }}
-  NEXUS_ADDR: {{ .Values.nexus.custom.address }}
-  {{- if .Values.nexus.custom.username }}
-  NEXUS_USERNAME: {{ .Values.nexus.custom.username }}
-  {{- end }}
-  {{- if .Values.nexus.custom.password }}
-  NEXUS_PASSWORD: {{ .Values.nexus.custom.password }}
-  # TODO: nexus_public_url need or not ?
-  NEXUS_PUBLIC_URL: http://nexus-sys.{{ .Values.erda.domain }}
-  {{- end }}
-  {{- end }}
+  KMS_ADDR: erda-kms.{{ .Release.Namespace }}.svc.cluster.local:3082
   REDIS_MASTER_NAME: mymaster
   REDIS_PASSWORD: {{ .Values.redis.redisFailover.secret }}
-  REDIS_SENTINELS_ADDR: rfs-erda-redis.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:26379
-  {{- if eq .Values.registry.networkMode "host" }}
-  REGISTRY_ADDR: {{ .Values.registry.hostURL }}
-  {{- else }}
-  REGISTRY_ADDR: erda-registry.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:5000
-  {{- end }}
-  SONAR_ADDR: erda-sonar.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:9000
+  REDIS_SENTINELS_ADDR: rfs-erda-redis.{{ .Release.Namespace }}.svc.cluster.local:26379
+  SONAR_ADDR: erda-sonar.{{ .Release.Namespace }}.svc.cluster.local:9000
   SONAR_ADMIN_PASSWORD: 78tE846484lQQFUwY51h0Yr96ZQ063
   SONAR_ADMIN_TOKEN: LY9DepZ7iDUsyH8TFoDR85ok7y2nw1
-  SONAR_PUBLIC_URL: https://sonar-sys.{{ .Values.erda.domain }}
-  {{- if eq .Values.global.size "prod" }}
-  ZOOKEEPER_ADDR: erda-zookeeper-1.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:2181,erda-zookeeper-2.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:2181,erda-zookeeper-3.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:2181
-  BOOTSTRAP_SERVERS: erda-kafka-1.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:9092,erda-kafka-2.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:9092,erda-kafka-3.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:9092
-  {{- else }}
-  ZOOKEEPER_ADDR: erda-zookeeper.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:2181
-  BOOTSTRAP_SERVERS: erda-kafka.{{ .Values.global.namespace | default "erda-system"}}.svc.cluster.local:9092
+  SONAR_PUBLIC_URL: https://sonar-sys.{{ .Values.global.domain }}
   {{- end }}

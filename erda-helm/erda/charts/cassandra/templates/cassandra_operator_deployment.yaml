@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: erda-cassandra-operator
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app:  erda-cassandra-operator
     operator: erda-cassandra-operator

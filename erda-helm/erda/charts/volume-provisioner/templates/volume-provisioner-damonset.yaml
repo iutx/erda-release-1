@@ -4,7 +4,7 @@ metadata:
   labels:
     app: volume-provisioner
   name: erda-volume-provisioner
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:

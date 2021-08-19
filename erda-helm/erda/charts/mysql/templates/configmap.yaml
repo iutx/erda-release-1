@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-initdb-config
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 data:
   initdb.sql: |
     create user '{{ .Values.user }}dbmigration'@'%' identified by '{{ .Values.password }}';

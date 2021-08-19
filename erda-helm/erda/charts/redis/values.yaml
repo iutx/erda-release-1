@@ -2,8 +2,6 @@
 global:
   # size defines deployment mode: 'demo' for minimal and 'prod' for product.
   size: demo
-  # namespace defines which namespace will erda components deployed in Kubernetes.
-  namespace: default
   # image defines repository and image pull policy for docker image.
   image:
     # repository defines docker image repository.
@@ -34,7 +32,7 @@ redisFailover:
   # redis master-slave standby
   redis:
     # replicas defines the number of redis instance
-    replicas: 2
+    replicas:
     # resources defines resources requests and limits for redis instance pod
     resources:
       requests:
@@ -46,7 +44,7 @@ redisFailover:
   # redis sentinels
   sentinel:
     # replicas defines the number of redis sentinel instance
-    replicas: 3
+    replicas:
     # resources defines resources requests and limits for redis sentinel pod
     resources:
       requests:

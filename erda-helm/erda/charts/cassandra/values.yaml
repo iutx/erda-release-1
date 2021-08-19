@@ -2,8 +2,6 @@
 global:
   # size defines deployment mode: 'demo' for minimal and 'prod' for product.
   size: demo
-  # namespace defines which namespace will erda components deployed in Kubernetes.
-  namespace: default
   # image defines repository and image pull policy for docker image.
   image:
     # repository defines docker image repository.

@@ -1,2 +1,0 @@
-{{- define "kafka.core" -}}
-{{- end -}}

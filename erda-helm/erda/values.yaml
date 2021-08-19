@@ -1,5 +1,4 @@
 global:
-  namespace: erda-system
   size: demo
   image:
     repository: registry.erda.cloud/erda
@@ -8,20 +7,23 @@ global:
     type: RollingUpdate
   # Use this set to assign a list of default pullSecrets
   imagePullSecrets: [ ]
-
+  # cluster access domain
+  domain: erda.io
 
 tags:
   work: false
   master: true
 
 erda:
+  # the name of cluster which erda installed
   clusterName: erda
-  domain: erda.io
+  # masterCluster config
   masterCluster:
     domain:
     protocol:
+  # operator defines image tag and resources used for erda operator
   operator:
-    tag: v1.1-f08d3a78-20210728
+    tag: v1.1.2
     resources:
       requests:
         cpu: 10m
@@ -29,208 +31,455 @@ erda:
       limits:
         cpu: 100m
         memory: 128Mi
-  image:
-    components:
-      init: init-image:1.0.0-20210510-21a3c66
-      erda: erda:1.0.0-20210510-d7dd555
-      erdaUI: erda-ui:1.0.0-20210508-f228247
-      uc: erda-uc:1.0.0-20210425-d4c5a312
-      telegraf: telegraf:1.0.0-20210510-dc02a9d
-      analyzer:
-        error: erda-analyzer-error-insight:1.0.0-20210422-69e9f84
-        metrics: erda-analyzer-metrics:1.0.0-20210422-69e9f84
-        alert: erda-analyzer-alert:1.0.0-20210422-69e9f84
-      filebeat: filebeat:1.0.0-20210422-5b97371
-      tmc: tmc:1.0.0-20210429-b87d98a
-      soldier: soldier:1.0.0-20210426-daef74b
+  # erda cluster config
   clusterConfig:
+    # platform access protocol, e.g. http/https/http,https
     protocol: http
+    # defined cluster type e.g. kubernetes, edas...
     clusterType: kubernetes
-    ssh:
-      user: root
-      password: ""
-    kubernetes:
-      version:
-      master:
-      mastervip:
-      lb:
+    # defined cluster global chart repo
+    helmRepo:
+      url:
+      username:
+      password:
+  # tags defines image tag used for erda component
+  tags:
+    init: 20210730-ca1833c
+    erda: 1.1-20210823-fb06328
+    uc: dice-1.1-20210630-f4d63b99
+    ui: 1.1-20210805-b1864c0fd7d9edae3b0b433b5289110a6627cfde
+    telegraf: 1.1-20210801-ee49757
+    filebeat: 1.1-20210801-02ea6b8
+    analyzer:
+      alert: 1.1.0-20210801-a274c27
+      error: 1.1.0-20210801-a274c27
+      metrics: 1.1.0-20210801-a274c27
+  # component defines replicas and resources config used for erda component
+  component:
+    admin:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    clusterManageer:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    collector:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    dicehub:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    hepa:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    monitor:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    msp:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    openapi:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    scheduler:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    streaming:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    ui:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    ucAdaptor:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    uc:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    cmp:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    coreServices:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerAlert:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerAlertTask:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerErrorInsight:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerErrorInsightTask:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerMetrics:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerMetricsTask:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    actionRunnerScheduler:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    clusterAgent:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    clusterDialer:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    dop:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    eventbox:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    filebeat:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    gittar:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    pipeline:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    telegraf:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    telegrafApp:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    telegrafPlatform:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    orchestrator:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
 
 volume-provisioner:
+  # tag defines volume-provisioner image tag.
   tag: 1.0.0-20210416-1a3758f
+  # provisioner defines CSI volume provisioner
   provisioner:
+    # local for erda local volume
     local:
       hostpath: /data
+    # nfs for erda nfs volume
     nfs:
       hostpath: /netdata
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: 10m
-      memory: 10Mi
+      cpu:
+      memory:
     limits:
-      cpu: 100m
-      memory: 256Mi
+      cpu:
+      memory:
 
 registry:
-  # registry 镜像 tag (版本)
+  # tag defines registry image tag.
   tag: 2.7.1
-  # registry 节点存储容量
-  capacity: 100Gi
+  # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
+  # capacity defines pvc capacity for registry instance (default: 1000Gi for prod mode and 50Gi for demo mode).
+  capacity:
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "500m"
-      memory: "512Mi"
+      cpu:
+      memory:
     limits:
-      cpu: "1"
-      memory: "1Gi"
-  networkMode: ""
-  hostURL: ""
-  hostNode:
+      cpu:
+      memory:
+  custom:
+    nodeName:
+    nodeIP:
+
 
 sonar:
-  # sonar 镜像 tag (版本)
+  # tag defines sonar image tag.
   tag: 8.4.2
+  # token defines sonar admin token (base64 encoded)
   token: LY9DepZ7iDUsyH8TFoDR85ok7y2nw1
+  # password defines sonar admin token (base64 encoded)
   password: 78tE846484lQQFUwY51h0Yr96ZQ063
-  # ingressHost: "sonar.${ERDA_GENERIC_DOMAIN}"
-  ingressHost: "sonar.erda.io"
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "750m"
-      memory: "1536Mi"
+      cpu:
+      memory:
     limits:
-      cpu: "1500m"
-      memory: "3Gi"
+      cpu:
+      memory:
 
 kms:
-  # kms 镜像 tag (版本)
+  # tag defines kms image tag.
   tag: 1.0.0-20200608-f11445f
+  # replicas defines the number of kms instance.
   replicas:
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "100m"
-      memory: "100Mi"
+      cpu:
+      memory:
     limits:
-      cpu: "500m"
-      memory: "500Mi"
+      cpu:
+      memory:
 
 nexus:
-  defaultAddress: https://maven.aliyun.com/repository/public
+  defaultAddress: maven.aliyun.com
   custom:
     address:
     username:
     password:
 
 redis:
-  # redisOperator 组件配置
+  # redisOperator defines image tag and resources used by redis operator instance.
   redisOperator:
-    # registry 镜像 tag (版本)
+    # tag defines redis operator image tag.
     tag: 1.0.0-20200723-1a7a9f14
+    # resources defines resources requests and limits for redis operator pod
     resources:
       requests:
-        cpu: "10m"
-        memory: "50Mi"
+        cpu:
+        memory:
       limits:
-        cpu: "100m"
-        memory: "50Mi"
+        cpu:
+        memory:
 
-  # redisFailover 组件配置
+  # redisFailover configuration
   redisFailover:
+    # tag defines redis image tag.
     tag: 3.2.12
-    secret: iEVII6LY6Ebrc4HX
-    # redis 实例配置
+    secret: aUVWSUk2TFk2RWJyYzRIWA==
+    # redis master-slave standby
     redis:
-      replicas: 2
+      # replicas defines the number of redis instance
+      replicas:
+      # resources defines resources requests and limits for redis instance pod
       resources:
         requests:
-          cpu: "150m"
-          memory: "1Gi"
+          cpu:
+          memory:
         limits:
-          cpu: "300m"
-          memory: "2Gi"
-    # redis sentinel 配置
+          cpu:
+          memory:
+    # redis sentinels
     sentinel:
-      replicas: 3
+      # replicas defines the number of redis sentinel instance
+      replicas:
+      # resources defines resources requests and limits for redis sentinel pod
       resources:
         requests:
-          cpu: "50m"
-          memory: "64Mi"
+          cpu:
+          memory:
         limits:
-          cpu: "200m"
-          memory: "128Mi"
+          cpu:
+          memory:
+
 
 kafka:
-  # kafka 镜像 tag (版本)
+  # tag defines kafka image tag.
   tag: 1.1.0-20210323-be01a9b
-  # kafka 节点存储容量
-  capacity: 100Gi
+  # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
+  # capacity defines pvc capacity for kafka instance (default: 100Gi for prod mode and 16Gi for demo mode).
+  capacity:
+  # kafka JAVA_OPTS (java heap size suggests to set as 0.75 * resources.limits.memory. eg: "-Xmx6144m -Xms6144m" for resources.limits.memory is 8192Mi)
+  javaOpts:
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "2"
-      memory: "8Gi"
+      cpu:
+      memory:
     limits:
-      cpu: "3"
-      memory: "12Gi"
-  java:
-    # 单个 kafka 实例设置的 Java heap 大小(单位 Mb)
-    heapmemory: "2048"
+      cpu:
+      memory:
+
 
 
 cassandra:
-  # cassandra-operator 镜像 tag (版本)
+  # operatorImageTag defines cassandra-operator image tag.
   operatorImageTag: v1.1.3-release
-  # addon-cassandra 镜像 tag (版本)
+  # cassandraImageTag defines cassandra image tag
   cassandraImageTag: 3.11.10
-  # cassandra 节点存储容量
-  capacity: 1000Gi
+  # capacity defines pvc capacity for cassandra instance (default: 1000Gi for prod mode and 50Gi for demo mode)
+  capacity:
+  # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
   resources:
     requests:
-      cpu: "6"
-      memory: "24Gi"
+      # cpu defines cpu requests.
+      cpu:
+      # memory defines memory requests.
+      memory:
     limits:
-      cpu: "12"
-      memory: "48Gi"
-  # 机架列表，cassandra 部署时按机架分布以提高高可用性
+      # cpu defines cpu limits.
+      cpu:
+      # memory defines memory limits.
+      memory:
   racks:
-    # 每个 rack 的名称, rack 的数量决定了高可用部署时 cassandra 实例的副本数量
+    # racks list
     - name: rack1
     - name: rack2
     - name: rack3
 
 elasticsearch:
-  # elasticsearch 镜像 tag (版本)
+  # tag defines elasticsearch image tag.
   tag: 6.2.4
-  # 高可用部署时默认副本数量
+  # replicas defines the number of elasticsearch instances in 'prod' deployment mode
   replicas: 3
-  # 高可用部署时可作为 master 的节点的数量（设置为至少集群节点数量/2 + 1）
+  # numberOfMasters defines the number of elasticsearch instances can be as master candidates in 'prod' deployment mode（must more than half of replicas + 1）
   numberOfMasters: 2
-  # elasticsearh 节点存储容量
-  capacity: 1000Gi
+  # # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
+  # capacity defines pvc capacity for elasticsearch instance  (default: 1000Gi for prod mode and 50Gi for demo mode).
+  capacity:
+  # elasticsearch JAVA_OPTS (java heap size suggests to set as 0.75 * resources.limits.memory, eg: "-Xms6144m -Xmx6144m" for resources.limits.memory is 8192Mi)
+  javaOpts:
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "4"
-      memory: "16Gi"
+      cpu:
+      memory:
     limits:
-      cpu: "6"
-      memory: "24Gi"
+      cpu:
+      memory:
 
 mysql:
-  # mysql 镜像 tag (版本)
+  # tag defines mysql image tag.
   tag: 5.7.34
-  # 数据库访问 用户名
+  # user defines the username Erda used to access mysql.
   user: erda
-  # 数据库访问 目标数据库
+  # database defines the database name Erda used to access mysql.
   database: erda
-  # 数据库访问 密码
+  # password defines the password according to the username Erda used to access mysql.
   password: password
-  # mysql 节点存储容量
-  capacity: 100Gi
+  # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
+  # capacity defines pvc capacity for myqsl instance  (default: 100Gi for prod mode and 10Gi for demo mode).
+  capacity:
   resources:
     requests:
-      cpu: "100m"
-      memory: "100Mi"
+      cpu:
+      memory:
     limits:
-      cpu: "2"
-      memory: "2Gi"
+      cpu:
+      memory:
   custom:
     address:
     port:
@@ -240,27 +489,33 @@ mysql:
 
 
 zookeeper:
-  # zookeeper 镜像 tag (版本)
+  # tag defines zookeeper image tag.
   tag: 3.4.13-monitor
-  # zookeeper 节点存储容量
-  capacity: 32Gi
+  # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
+  # capacity defines pvc capacity for zookeeper instance (default: 32Gi for prod mode and 4Gi for demo mode)..
+  capacity:
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "100m"
-      memory: "256Mi"
+      cpu:
+      memory:
     limits:
-      cpu: "1"
-      memory: "512Mi"
+      cpu:
+      memory:
 
 etcd:
-  # etcd 镜像 tag (版本)
+  # tag defines etcd image tag.
   tag: 3.3.15-0
-  # etcd 节点存储容量
-  capacity: 32Gi
+  # storageClassName defines which storageclass to use for creating PV in Kubernetes.
+  storageClassName: "dice-local-volume"
+  # capacity defines pvc capacity for etcd instance (default: 32Gi for prod mode and 8Gi for demo mode).
+  capacity:
+  # resources defines resources requests and limits for pod
   resources:
     requests:
-      cpu: "100m"
-      memory: "1Gi"
+      cpu:
+      memory:
     limits:
-      cpu: "4"
-      memory: "16Gi"
+      cpu:
+      memory:

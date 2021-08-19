@@ -2,7 +2,7 @@ apiVersion: v2
 name: zookeeper
 description: A Helm chart for zookeeper
 type: application
-version: 3.4.13-monitor
+version: 3.4.13
 keywords:
   - zookeeper
 sources:

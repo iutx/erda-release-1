@@ -4,7 +4,7 @@ metadata:
   labels:
     dice/addon: erda-elasticsearch
   name: erda-elasticsearch
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: http
@@ -22,7 +22,7 @@ metadata:
   labels:
     dice/addon: erda-elasticsearch
   name: erda-elasticsearch-master
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: transport

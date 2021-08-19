@@ -2,8 +2,6 @@
 global:
   # size defines deployment mode: 'demo' for minimal and 'prod' for product.
   size: demo
-  # namespace defines which namespace will erda components deployed in Kubernetes.
-  namespace: default
   # image defines repository and image pull policy for docker image.
   image:
     # repository defines docker image repository.
@@ -12,6 +10,8 @@ global:
     imagePullPolicy: IfNotPresent
   # imagePullSecrets defines pull secrets for pulling image from private image repository.
   imagePullSecrets: [ ]
+  # cluster access domain
+  domain: erda.io
 
 # tag defines sonar image tag.
 tag: 8.4.2
@@ -19,8 +19,6 @@ tag: 8.4.2
 token: LY9DepZ7iDUsyH8TFoDR85ok7y2nw1
 # password defines sonar admin token (base64 encoded)
 password: 78tE846484lQQFUwY51h0Yr96ZQ063
-# ingressHost: "sonar.${ERDA_GENERIC_DOMAIN}"
-ingressHost: "sonar.erda.io"
 # resources defines resources requests and limits for pod
 resources:
   requests:

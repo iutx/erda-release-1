@@ -4,7 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: erda-etcd-0
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
   ports:
@@ -25,7 +25,7 @@ metadata:
   labels:
     app: erda-etcd-0
   name: erda-etcd-0
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -59,10 +59,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
           - --listen-client-urls=https://$(POD_IP):2379
           - --listen-metrics-urls=https://$(POD_IP):2381
           - --listen-peer-urls=https://$(POD_IP):2380
@@ -124,7 +124,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: erda-etcd-1
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
   ports:
@@ -145,7 +145,7 @@ metadata:
   labels:
     app: erda-etcd-1
   name: erda-etcd-1
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -179,10 +179,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
           - --listen-client-urls=https://$(POD_IP):2379
           - --listen-metrics-urls=https://$(POD_IP):2381
           - --listen-peer-urls=https://$(POD_IP):2380
@@ -236,7 +236,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: {{ .Values.capacity | default "32i" }}
+          storage: {{ .Values.capacity | default "32Gi" }}
       storageClassName: {{ .Values.storageClassName | default "dice-local-volume" }}
       volumeMode: Filesystem
 ---
@@ -244,7 +244,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: erda-etcd-2
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
   ports:
@@ -265,7 +265,7 @@ metadata:
   labels:
     app: erda-etcd-2
   name: erda-etcd-2
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -299,10 +299,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
           - --listen-client-urls=https://$(POD_IP):2379
           - --listen-metrics-urls=https://$(POD_IP):2381
           - --listen-peer-urls=https://$(POD_IP):2380

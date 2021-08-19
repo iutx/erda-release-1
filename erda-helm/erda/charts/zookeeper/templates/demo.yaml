@@ -6,7 +6,7 @@ metadata:
   labels:
     app: erda-zookeeper
   name: erda-zookeeper
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -121,7 +121,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: erda-zookeeper
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: erda-zookeeper-tcp-2181

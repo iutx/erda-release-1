@@ -1,13 +1,13 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: dice-operator
+  name: erda-operator
 rules:
   - apiGroups:
-      - dice.terminus.io
+      - erda.terminus.io
     resources:
-      - dices
-      - dices/status
+      - erdas
+      - erdas/status
     verbs:
       - '*'
   - apiGroups:

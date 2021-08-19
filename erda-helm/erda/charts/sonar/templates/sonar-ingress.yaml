@@ -1,13 +1,26 @@
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: erda-sonar
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
-  - host: {{ .Values.ingressHost }}
-    http:
-      paths:
-      - backend:
-          serviceName: erda-sonar
-          servicePort: 9000
+    - host: sonar-sys.{{ .Values.global.domain }}
+      http:
+        paths:
+          {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+          - backend:
+              service:
+                name: erda-sonar
+                port:
+                  number: 9000
+            pathType: ImplementationSpecific
+          {{- else }}
+          - backend:
+              serviceName: erda-sonar
+              servicePort: 9000
+         {{- end }}

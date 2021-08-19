@@ -7,7 +7,7 @@ metadata:
   labels:
     app:  erda-etcd
   name:  erda-etcd
-  namespace:  {{ .Values.global.namespace | default "erda-system" }}
+  namespace:  {{ .Release.Namespace }}
 spec:
   backoffLimit: 3
   completions: 1
@@ -23,10 +23,10 @@ spec:
         - name: ERDA_ETCD_NAME
           value: erda-etcd
         - name: ERDA_NAMESPACE
-          value: {{ .Values.global.namespace | default "erda-system" }}
+          value: {{ .Release.Namespace }}
         - name: ERDA_SIZE
           value: {{ .Values.global.size | default "demo" }}
-        image: registry.cn-shanghai.aliyuncs.com/viper/etcd_ssl_gen:v0.2.0
+        image: {{ .Values.global.image.repository}}/etcd_ssl_gen:v0.2.0
         imagePullPolicy: Always
         name: etcd-ssl-generator
         resources:
@@ -39,5 +39,4 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext: {}
       restartPolicy: "Never"
-      serviceAccount: erda-etcd
       serviceAccountName: erda-etcd

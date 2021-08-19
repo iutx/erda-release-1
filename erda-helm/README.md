@@ -13,6 +13,7 @@ Erda helm chart 包支持两种部署模式（`prod`和`demo`），对于资源�
 | global.image.repository | Erda 组件镜像仓库 | registry.erda.cloud/erda |
 | global.image.imagePullPolicy | 镜像拉取策略 | IfNotPresent |
 | global.imagePullSecrets | 私有镜像拉取使用 secrets | [] |
+| global.domain | erda 当前集群绑定的泛域名 | "erda.io" |
 | tags.work | / | / |
 | tags.master | / | / |
 
@@ -344,7 +345,6 @@ mysql:
 |:----|:---|:---:|
 | erda.clusterName | 集群名称 | erda |
 | erda.clusterName | erda 所在 Kubernetes 集群的标识 | erda |
-| erda.domain | erda 当前集群绑定的泛域名 | "erda.io" |
 | erda.masterCluster.domain | erda master 集群的泛域名, 主要用于 slave 集群 | - |
 | erda.masterCluster.protocol | erda master 集群的请求协议 http/https/http,https，主要用于 slave 集群 | http |
 | erda.operator.tag | erda-operator 镜像 tag |  |
@@ -433,6 +433,11 @@ mysql:
 | erda.component.uc.resources.mem | erda uc 组件实例 Pod 的 Memory 资源请求值 | "100Mi" |
 | erda.component.uc.resources.max_cpu | erda uc 组件实例 Pod 的 CPU 资源限制值 | "1" |
 | erda.component.uc.resources.max_mem | erda uc 组件实例 Pod 的 Memory 资源限制值 | "2048Mi" |
+| erda.component.cmp.replicas | erda cmp 组件副本数 | 2 |
+| erda.component.cmp.resources.cpu | erda cmp 组件实例 Pod 的 CPU 资源请求值 | "100m" |
+| erda.component.cmp.resources.mem | erda cmp 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
+| erda.component.cmp.resources.max_cpu | erda cmp 组件实例 Pod 的 CPU 资源限制值 | "200m" |
+| erda.component.cmp.resources.max_mem | erda cmp 组件实例 Pod 的 Memory 资源限制值 | - |
 | erda.component.analyzerAlert.resources.cpu | erda analyzerAlert 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.analyzerAlert.resources.mem | erda analyzerAlert 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.analyzerAlert.resources.max_cpu | erda analyzerAlert 组件实例 Pod 的 CPU 资源限制值 | "1" |
@@ -469,10 +474,6 @@ mysql:
 | erda.component.clusterDialer.resources.mem | erda clusterDialer 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.clusterDialer.resources.max_cpu | erda clusterDialer 组件实例 Pod 的 CPU 资源限制值 | "2" |
 | erda.component.clusterDialer.resources.max_mem | erda clusterDialer 组件实例 Pod 的 Memory 资源限制值 | "2048Mi" |
-| erda.component.cmp.resources.cpu | erda cmp 组件实例 Pod 的 CPU 资源请求值 | "100m" |
-| erda.component.cmp.resources.mem | erda cmp 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
-| erda.component.cmp.resources.max_cpu | erda cmp 组件实例 Pod 的 CPU 资源限制值 | "200m" |
-| erda.component.cmp.resources.max_mem | erda cmp 组件实例 Pod 的 Memory 资源限制值 | - |
 | erda.component.dop.resources.cpu | erda dop 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.dop.resources.mem | erda dop 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.dop.resources.max_cpu | erda dop 组件实例 Pod 的 CPU 资源限制值 | "1" |
@@ -505,7 +506,7 @@ mysql:
 | erda.component.telegrafPlatform.resources.mem | erda telegrafPlatform 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.telegrafPlatform.resources.max_cpu | erda telegrafPlatform 组件实例 Pod 的 CPU 资源限制值 | "1" |
 | erda.component.telegrafPlatform.resources.max_mem | erda telegrafPlatform 组件实例 Pod 的 Memory 资源限制值 | "1536Mi" |
-| erda.component.orchestrator.resources.cpu | orchestrator ucAdaptor 组件实例 Pod 的 CPU 资源请求值 | "100m" |
+| erda.component.orchestrator.resources.cpu | erda orchestrator 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.orchestrator.resources.mem | erda orchestrator 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.orchestrator.resources.max_cpu | erda orchestrator 组件实例 Pod 的 CPU 资源限制值 | "1000m" |
 | erda.component.orchestrator.resources.max_mem | erda orchestrator 组件实例 Pod 的 Memory 资源限制值 | "256Mi" |

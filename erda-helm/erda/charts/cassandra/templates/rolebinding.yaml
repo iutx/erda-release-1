@@ -6,11 +6,11 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install
   name: erda-cassandra-operator
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 subjects:
 - kind: ServiceAccount
   name: erda-cassandra-operator
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: erda-cassandra-operator
@@ -24,11 +24,11 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install
   name: erda-cassandra-cluster-node
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
     name: cassandra-cluster-node
-    namespace: {{ .Values.global.namespace | default "erda-system" }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: erda-cassandra-cluster-node

@@ -4,7 +4,7 @@ metadata:
   labels:
     app: erda-redis-operator
   name: erda-redis-operator
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:

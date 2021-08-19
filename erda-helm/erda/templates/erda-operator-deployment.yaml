@@ -4,7 +4,7 @@ metadata:
   labels:
     app: erda-operator
   name: erda-operator
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -17,16 +17,20 @@ spec:
       labels:
         app: erda-operator
     spec:
-      serviceAccountName: dice-operator
+      serviceAccountName: erda-operator
       containers:
-      - image: {{ .Values.global.image.repository }}/dice-operator:{{ .Values.erda.operator.tag }}
+      - image: {{ .Values.global.image.repository }}/erda-operator:{{ .Values.erda.operator.tag }}
         imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
         name: erda-operator
         env:
+        - name: ETCD_SECRET_NAME
+          value: erda-etcd-client-secret
+        - name: CRD_KIND_SPECIFIED
+          value: Erda
         - name: ENABLE_SPECIFIED_NAMESPACE
-          value: {{ .Values.global.namespace | default "erda-system" }}
+          value: {{ .Release.Namespace }}
         - name: ENABLE_CONFIGMAP_NAMESPACE
-          value: {{ .Values.global.namespace | default "erda-system" }}
+          value: {{ .Release.Namespace }}
         {{- if .Values.tags.work }}
         - name: ENABLE_ETCD_SECRET
           value: disable

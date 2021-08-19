@@ -2,7 +2,7 @@ apiVersion: "db.orange.com/v1alpha1"
 kind: "CassandraCluster"
 metadata:
   name: erda-cassandra
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     cluster: k8s.kaas
 spec:

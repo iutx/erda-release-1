@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: erda-registry
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
     - name: port-5000

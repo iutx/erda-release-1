@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dice-cluster-info
-  namespace: {{ .Values.global.namespace | default "erda-system" }}
+  namespace: {{ .Release.Namespace }}
 data:
   DICE_CLUSTER_NAME:  {{ .Values.erda.clusterName }}
   DICE_CLUSTER_TYPE: {{ .Values.erda.clusterConfig.clusterType }}
@@ -12,36 +12,45 @@ data:
   DICE_IS_EDGE: "false"
   {{- end }}
   DICE_PROTOCOL:  {{ .Values.erda.clusterConfig.protocol }}
+  {{- if eq .Values.erda.clusterConfig.protocol "https" }}
   DICE_HTTPS_PORT: "443"
+  {{- end }}
   DICE_HTTP_PORT: "80"
-  DICE_ROOT_DOMAIN: {{ .Values.erda.domain }}
+  DICE_ROOT_DOMAIN: {{ .Values.global.domain }}
   DICE_SIZE:  {{ .Values.global.size }}
-  DICE_SSH_PASSWORD:  {{ .Values.erda.clusterConfig.ssh.password |default "123123" | quote }}
-  DICE_SSH_USER:  {{ .Values.erda.clusterConfig.ssh.user }}
   DICE_STORAGE_MOUNTPOINT: /netdata
-  DICE_VERSION: "1.1.0"
+  DICE_VERSION: {{.Chart.Version}}
   {{- if eq .Values.global.size "prod" }}
-  ETCD_ENDPOINTS: https://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379,https://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379,https://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
-  ETCD_MONITOR_URL: http://erda-etcd-0.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381,http://erda-etcd-1.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381,http://erda-etcd-2.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381
+  ETCD_ENDPOINTS: https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2379,https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2379,https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2379
+  ETCD_MONITOR_URL: http://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2381,http://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2381,http://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2381
   {{- else }}
-  ETCD_ENDPOINTS: https://erda-etcd.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2379
-  ETCD_MONITOR_URL: http://erda-etcd.{{ .Values.global.namespace | default "erda-system" }}.svc.cluster.local:2381
+  ETCD_ENDPOINTS: https://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2379
+  ETCD_MONITOR_URL: http://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2381
   {{- end }}
   GLUSTERFS_MONITOR_URL: ""
   IS_FDP_CLUSTER: "false"
   ISTIO_ALIYUN: "false"
   ISTIO_INSTALLED: "false"
   ISTIO_VERSION: 1.1.4
+  {{- if .Values.erda.clusterConfig.helmRepo.url }}
+  HELM_REPO_URL: {{ .Values.erda.clusterConfig.helmRepo.url }}
+  {{- else }}
+  HELM_REPO_URL: https://charts.erda.cloud/erda
+  {{- end }}
+  {{- if .Values.erda.clusterConfig.helmRepo.username }}
+  HELM_REPO_USERNAME: {{ .Values.erda.clusterConfig.helmRepo.username }}
+  HELM_REPO_PASSWORD: {{ .Values.erda.clusterConfig.helmRepo.password }}
+  {{- end }}
   {{/*  TODO: Deprecated */}}
   CLUSTER_DNS: 10.96.0.3
   DICE_INSIDE: "false"
-  {{- if .Values.erda.clusterConfig.kubernetes.lb }}
-  LB_ADDR: {{ .Values.erda.clusterConfig.kubernetes.lb }}
-  LB_MONITOR_URL: http://{{ .Values.erda.clusterConfig.kubernetes.lb }}
-  {{- end }}
+  {{/*  LB_ADDR: {{ .Values.erda.clusterConfig.kubernetes.lb }}*/}}
+  {{/*  LB_MONITOR_URL: http://{{ .Values.erda.clusterConfig.kubernetes.lb }}*/}}
   {{/*  KUBERNETES_VENDOR: dice*/}}
   {{/*  KUBERNETES_VERSION: {{ .Values.erda.clusterConfig.kubernetes.version }}*/}}
   {{/*  MASTER_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}*/}}
   {{/*  MASTER_MONITOR_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}*/}}
   {{/*  MASTER_VIP_ADDR: {{ .Values.erda.clusterConfig.kubernetes.mastervip }}*/}}
   {{/*  MASTER_VIP_URL: https://{{ .Values.erda.clusterConfig.kubernetes.mastervip }}*/}}
+  {{/*  DICE_SSH_PASSWORD:  {{ .Values.erda.clusterConfig.ssh.password |default "123123" | quote }}*/}}
+  {{/*  DICE_SSH_USER:  {{ .Values.erda.clusterConfig.ssh.user }}*/}}
