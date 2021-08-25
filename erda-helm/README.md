@@ -383,11 +383,6 @@ mysql:
 | erda.component.coreServices.resources.mem | erda coreServices 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.coreServices.resources.max_cpu | erda coreServices 组件实例 Pod 的 CPU 资源限制值 | "300m" |
 | erda.component.coreServices.resources.max_mem | erda coreServices 组件实例 Pod 的 Memory 资源限制值 | "512Mi" |
-| erda.component.dicehub.replicas | erda dicehub 组件副本数 | 2 |
-| erda.component.dicehub.resources.cpu | erda dicehub 组件实例 Pod 的 CPU 资源请求值 | "100m" |
-| erda.component.dicehub.resources.mem | erda dicehub 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
-| erda.component.dicehub.resources.max_cpu | erda dicehub 组件实例 Pod 的 CPU 资源限制值 | "150m" |
-| erda.component.dicehub.resources.max_mem | erda dicehub 组件实例 Pod 的 Memory 资源限制值 | "1024Mi" |
 | erda.component.hepa.replicas | erda hepa 组件副本数 | 2 |
 | erda.component.hepa.resources.cpu | erda hepa 组件实例 Pod 的 CPU 资源请求值 | **prod**: "100m"<br>**demo**: "100m"  |
 | erda.component.hepa.resources.mem | erda hepa 组件实例 Pod 的 Memory 资源请求值 | **prod**: "512Mi"<br>**demo**: "128Mi" |
@@ -438,6 +433,10 @@ mysql:
 | erda.component.cmp.resources.mem | erda cmp 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.cmp.resources.max_cpu | erda cmp 组件实例 Pod 的 CPU 资源限制值 | "200m" |
 | erda.component.cmp.resources.max_mem | erda cmp 组件实例 Pod 的 Memory 资源限制值 | - |
+| erda.component.dicehub.resources.cpu | erda dicehub 组件实例 Pod 的 CPU 资源请求值 | "100m" |
+| erda.component.dicehub.resources.mem | erda dicehub 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
+| erda.component.dicehub.resources.max_cpu | erda dicehub 组件实例 Pod 的 CPU 资源限制值 | "150m" |
+| erda.component.dicehub.resources.max_mem | erda dicehub 组件实例 Pod 的 Memory 资源限制值 | "1024Mi" |
 | erda.component.analyzerAlert.resources.cpu | erda analyzerAlert 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.analyzerAlert.resources.mem | erda analyzerAlert 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.analyzerAlert.resources.max_cpu | erda analyzerAlert 组件实例 Pod 的 CPU 资源限制值 | "1" |

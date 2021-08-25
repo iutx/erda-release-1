@@ -53,6 +53,9 @@ spec:
       COLLECTOR_ADDR: collector:7076
       ETCDCTL_API: "3"
       MONITOR_ADDR: monitor:7096
+      PIPELINE_ADDR: pipeline:3081
+      ADMIN_ADDR: admin:9095
+      MSP_ADDR: msp:8080
     services:
       {{- if not .Values.tags.work }}
       action-runner-scheduler:
@@ -95,6 +98,12 @@ spec:
             l4_protocol: TCP
             expose: false
             default: false
+          - port: 9096
+            protocol: TCP
+            l4_protocol: TCP
+          - port: 8096
+            protocol: TCP
+            l4_protocol: TCP
         envs:
           DEBUG: "false"
         resources:
@@ -329,11 +338,7 @@ spec:
           network:
             mode: container
         deployments:
-          {{- if eq .Values.global.size "demo" }}
-          replicas: {{ .Values.erda.component.dicehub.replicas | default "1" }}
-          {{- else }}
-          replicas: {{ .Values.erda.component.dicehub.replicas | default "2" }}
-          {{- end }}
+          replicas: 1
           labels:
             GROUP: dice
         health_check:
@@ -635,6 +640,9 @@ spec:
             l4_protocol: TCP
             expose: false
             default: false
+          - port: 30810
+            protocol: "TCP"
+            l4_protocol: "TCP"
         envs:
           DEBUG: "false"
           GIT_INNER_USER_NAME: "18000000000"
@@ -1222,7 +1230,7 @@ spec:
     services:
       telegraf:
         image:
-          {{ .Values.global.image.repository }}/telegraf:{{ .Values.erda.tags.telegraf }}
+          {{ .Values.global.image.repository }}/erda-telegraf:{{ .Values.erda.tags.telegraf }}
         ports:
           - port: 8090
             protocol: TCP
@@ -1270,7 +1278,7 @@ spec:
             duration: 120
       telegraf-app:
         image:
-          {{ .Values.global.image.repository }}/telegraf:{{ .Values.erda.tags.telegraf }}
+          {{ .Values.global.image.repository }}/erda-telegraf:{{ .Values.erda.tags.telegraf }}
         ports:
           - port: 8091
             protocol: TCP
@@ -1305,7 +1313,7 @@ spec:
             duration: 120
       telegraf-platform:
         image:
-          {{ .Values.global.image.repository }}/telegraf:{{ .Values.erda.tags.telegraf }}
+          {{ .Values.global.image.repository }}/erda-telegraf:{{ .Values.erda.tags.telegraf }}
         ports:
           - port: 8092
             protocol: TCP
@@ -1381,7 +1389,7 @@ spec:
     services:
       filebeat:
         image:
-          {{ .Values.global.image.repository }}/filebeat:{{ .Values.erda.tags.filebeat }}
+          {{ .Values.global.image.repository }}/erda-filebeat:{{ .Values.erda.tags.filebeat }}
         envs:
           COLLECTOR_AUTH_PASSWORD: G$9767bP32drYFPWrK4XMLRMTatiM6cU
           COLLECTOR_AUTH_USERNAME: collector

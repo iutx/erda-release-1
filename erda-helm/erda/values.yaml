@@ -23,7 +23,7 @@ erda:
     protocol:
   # operator defines image tag and resources used for erda operator
   operator:
-    tag: v1.1.2
+    tag: v1.2.1-20210824-d076ae5
     resources:
       requests:
         cpu: 10m
@@ -44,16 +44,16 @@ erda:
       password:
   # tags defines image tag used for erda component
   tags:
-    init: 20210730-ca1833c
-    erda: 1.1-20210823-fb06328
+    init: 20210823-ee83212
+    erda: 1.2-20210824-767d299
     uc: dice-1.1-20210630-f4d63b99
-    ui: 1.1-20210805-b1864c0fd7d9edae3b0b433b5289110a6627cfde
-    telegraf: 1.1-20210801-ee49757
-    filebeat: 1.1-20210801-02ea6b8
+    ui: 1.2-20210824-ba7fad81b8bcdd06501e4c8e0244b970c7fcf51d
+    telegraf: 1.2-20210823-24b909c
+    filebeat: 1.2-20210817-51855f8
     analyzer:
-      alert: 1.1.0-20210801-a274c27
-      error: 1.1.0-20210801-a274c27
-      metrics: 1.1.0-20210801-a274c27
+      alert: 1.2.0-20210817-116eeae
+      error: 1.2.0-20210817-116eeae
+      metrics: 1.2.0-20210817-116eeae
   # component defines replicas and resources config used for erda component
   component:
     admin:
@@ -71,13 +71,6 @@ erda:
         max_cpu:
         max_mem:
     collector:
-      replicas:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
-    dicehub:
       replicas:
       resources:
         cpu:
@@ -156,6 +149,12 @@ erda:
         max_mem:
     coreServices:
       replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    dicehub:
       resources:
         cpu:
         mem:
