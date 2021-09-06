@@ -1,0 +1,13 @@
+The erda has been installed, version: {{ .Chart.Version }}, size: {{ .Values.global.size }}.
+
+You can get the application status by running these commands:
+
+  $ kubectl get erda erda -n {{ .Release.Namespace }}
+
+After all components are Running:
+
+  1. You can visit erda: {{ .Values.erda.clusterConfig.protocol }}://{{ .Values.global.domain }}
+  2. If you don’t have a real domain mapped to lb, you need to configure
+     local hosts resolution.
+
+If you encounter problems during installation, please visit: https://docs.erda.cloud

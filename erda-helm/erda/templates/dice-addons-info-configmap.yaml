@@ -4,14 +4,14 @@ metadata:
   name: dice-addons-info
   namespace: {{ .Release.Namespace }}
 data:
-  CASSANDRA_ADDR: erda-cassandra.{{ .Release.Namespace }}.svc.cluster.local
+  CASSANDRA_ADDR: erda-cassandra.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
   CASSANDRA_SECURITY_ENABLE: "false"
   {{- if eq .Values.global.size "prod" }}
-  ZOOKEEPER_ADDR: erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2181
-  BOOTSTRAP_SERVERS: erda-kafka-1.{{ .Release.Namespace }}.svc.cluster.local:9092,erda-kafka-2.{{ .Release.Namespace }}.svc.cluster.local:9092,erda-kafka-3.{{ .Release.Namespace }}.svc.cluster.local:9092
+  ZOOKEEPER_ADDR: erda-zookeeper-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181
+  BOOTSTRAP_SERVERS: erda-kafka-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:9092,erda-kafka-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:9092,erda-kafka-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:9092
   {{- else }}
-  ZOOKEEPER_ADDR: erda-zookeeper.{{ .Release.Namespace }}.svc.cluster.local:2181
-  BOOTSTRAP_SERVERS: erda-kafka.{{ .Release.Namespace }}.svc.cluster.local:9092
+  ZOOKEEPER_ADDR: erda-zookeeper.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181
+  BOOTSTRAP_SERVERS: erda-kafka.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:9092
   {{- end }}
   {{- if not .Values.nexus.custom.address }}
   NEXUS_ADDR: {{ .Values.nexus.defaultAddress }}
@@ -29,13 +29,13 @@ data:
   {{- if .Values.registry.custom.nodeName }}
   REGISTRY_ADDR: {{ .Values.registry.custom.nodeIP }}:5000
   {{- else }}
-  REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.cluster.local:5000
+  REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:5000
   {{- end }}
   {{- if not .Values.tags.work }}
   ES_SECURITY_ENABLE: "false"
   ES_SECURITY_PASSWORD: ""
   ES_SECURITY_USERNAME: ""
-  ES_URL: http://erda-elasticsearch.{{ .Release.Namespace }}.svc.cluster.local:9200
+  ES_URL: http://erda-elasticsearch.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:9200
   {{- if .Values.mysql.custom.address }}
   MYSQL_DATABASE: {{ .Values.mysql.custom.database }}
   MYSQL_HOST: {{ .Values.mysql.custom.address }}
@@ -44,16 +44,16 @@ data:
   MYSQL_USERNAME: {{ .Values.mysql.custom.user }}
   {{- else }}
   MYSQL_DATABASE: {{ .Values.mysql.database }}
-  MYSQL_HOST: erda-mysql.{{ .Release.Namespace }}.svc.cluster.local
+  MYSQL_HOST: erda-mysql.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
   MYSQL_PASSWORD: {{ .Values.mysql.password }}
   MYSQL_PORT: "3306"
   MYSQL_USERNAME: {{ .Values.mysql.user }}
   {{- end }}
-  KMS_ADDR: erda-kms.{{ .Release.Namespace }}.svc.cluster.local:3082
+  KMS_ADDR: erda-kms.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:3082
   REDIS_MASTER_NAME: mymaster
   REDIS_PASSWORD: {{ .Values.redis.redisFailover.secret }}
-  REDIS_SENTINELS_ADDR: rfs-erda-redis.{{ .Release.Namespace }}.svc.cluster.local:26379
-  SONAR_ADDR: erda-sonar.{{ .Release.Namespace }}.svc.cluster.local:9000
+  REDIS_SENTINELS_ADDR: rfs-erda-redis.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:26379
+  SONAR_ADDR: erda-sonar.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:9000
   SONAR_ADMIN_PASSWORD: 78tE846484lQQFUwY51h0Yr96ZQ063
   SONAR_ADMIN_TOKEN: LY9DepZ7iDUsyH8TFoDR85ok7y2nw1
   SONAR_PUBLIC_URL: https://sonar-sys.{{ .Values.global.domain }}

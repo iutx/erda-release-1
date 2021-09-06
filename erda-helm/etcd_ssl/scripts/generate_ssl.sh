@@ -14,6 +14,7 @@ export ERDA_ETCD_NAME=${ERDA_ETCD_NAME:-"erda-etcd"}
 
 export ERDA_NAMESPACE=${ERDA_NAMESPACE:-"default"}
 export ERDA_SIZE=${ERDA_SIZE:-"demo"}
+export KUBE_SERVICE_DNS_DOMAIN=${KUBE_SERVICE_DNS_DOMAIN:-"cluster.local"}
 
 
 echo "ERDA_NAMESPACE=$ERDA_NAMESPACE"
@@ -22,15 +23,15 @@ echo "ERDA_SIZE=${ERDA_SIZE}"
 
 if [[ "${ERDA_SIZE}" == "demo"  ]]; then
 	etcd_sans=(
-		${ERDA_ETCD_NAME}.${ERDA_NAMESPACE}.svc.cluster.local
+		${ERDA_ETCD_NAME}.${ERDA_NAMESPACE}.svc.${KUBE_SERVICE_DNS_DOMAIN}
 		127.0.0.1
 		localhost
 	)
 else
 	etcd_sans=(
-		${ERDA_ETCD_NAME}-0.${ERDA_NAMESPACE}.svc.cluster.local
-		${ERDA_ETCD_NAME}-1.${ERDA_NAMESPACE}.svc.cluster.local
-		${ERDA_ETCD_NAME}-2.${ERDA_NAMESPACE}.svc.cluster.local
+		${ERDA_ETCD_NAME}-0.${ERDA_NAMESPACE}.svc.${KUBE_SERVICE_DNS_DOMAIN}
+		${ERDA_ETCD_NAME}-1.${ERDA_NAMESPACE}.svc.${KUBE_SERVICE_DNS_DOMAIN}
+		${ERDA_ETCD_NAME}-2.${ERDA_NAMESPACE}.svc.${KUBE_SERVICE_DNS_DOMAIN}
 		127.0.0.1
 		localhost
 	)

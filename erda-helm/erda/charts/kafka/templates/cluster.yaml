@@ -66,7 +66,7 @@ spec:
           - name: DICE_PLATFORM_ADDON
             value: erda-kafka-1
           - name: KAFKA_ADVERTISED_HOST_NAME
-            value: erda-kafka-1.{{ .Release.Namespace }}.svc.cluster.local
+            value: erda-kafka-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
           - name: KAFKA_ADVERTISED_PORT
             value: '9092'
           - name: KAFKA_DEFAULT_REPLICATION_FACTOR
@@ -98,7 +98,7 @@ spec:
           - name: KAFKA_REPLICA_FETCH_MAX_BYTES
             value: '20000000'
           - name: KAFKA_ZOOKEEPER_CONNECT
-            value:  erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2181
+            value:  erda-zookeeper-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181
           - name: KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS
             value: '10000'
           - name: KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS
@@ -221,7 +221,7 @@ spec:
           - name: DICE_PLATFORM_ADDON
             value: erda-kafka-2
           - name: KAFKA_ADVERTISED_HOST_NAME
-            value: erda-kafka-2.{{ .Release.Namespace }}.svc.cluster.local
+            value: erda-kafka-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
           - name: KAFKA_ADVERTISED_PORT
             value: '9092'
           - name: KAFKA_DEFAULT_REPLICATION_FACTOR
@@ -253,7 +253,7 @@ spec:
           - name: KAFKA_REPLICA_FETCH_MAX_BYTES
             value: '20000000'
           - name: KAFKA_ZOOKEEPER_CONNECT
-            value:  erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2181
+            value:  erda-zookeeper-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181
           - name: KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS
             value: '10000'
           - name: KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS
@@ -376,7 +376,7 @@ spec:
           - name: DICE_PLATFORM_ADDON
             value: erda-kafka-3
           - name: KAFKA_ADVERTISED_HOST_NAME
-            value: erda-kafka-3.{{ .Release.Namespace }}.svc.cluster.local
+            value: erda-kafka-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
           - name: KAFKA_ADVERTISED_PORT
             value: '9092'
           - name: KAFKA_DEFAULT_REPLICATION_FACTOR
@@ -408,7 +408,7 @@ spec:
           - name: KAFKA_REPLICA_FETCH_MAX_BYTES
             value: '20000000'
           - name: KAFKA_ZOOKEEPER_CONNECT
-            value:  erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2181
+            value:  erda-zookeeper-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181,erda-zookeeper-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2181
           - name: KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS
             value: '10000'
           - name: KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS

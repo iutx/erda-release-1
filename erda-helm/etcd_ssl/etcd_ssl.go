@@ -16,15 +16,16 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"os/exec"
+	"time"
+
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"os"
-	"os/exec"
 	"sigs.k8s.io/yaml"
-	"time"
 )
 
 func main() {
@@ -49,8 +50,8 @@ func main() {
 }
 
 func createSecretsFile() error {
-	ctx, calcel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer calcel()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
 	cmd := exec.CommandContext(ctx, "./generate_ssl.sh")
 	err := cmd.Start()

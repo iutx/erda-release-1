@@ -21,11 +21,11 @@ data:
   DICE_STORAGE_MOUNTPOINT: /netdata
   DICE_VERSION: {{.Chart.Version}}
   {{- if eq .Values.global.size "prod" }}
-  ETCD_ENDPOINTS: https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2379,https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2379,https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2379
-  ETCD_MONITOR_URL: http://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2381,http://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2381,http://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2381
+  ETCD_ENDPOINTS: https://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379,https://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379,https://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379
+  ETCD_MONITOR_URL: http://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2381,http://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2381,http://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2381
   {{- else }}
-  ETCD_ENDPOINTS: https://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2379
-  ETCD_MONITOR_URL: http://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2381
+  ETCD_ENDPOINTS: https://erda-etcd.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379
+  ETCD_MONITOR_URL: http://erda-etcd.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2381
   {{- end }}
   GLUSTERFS_MONITOR_URL: ""
   IS_FDP_CLUSTER: "false"

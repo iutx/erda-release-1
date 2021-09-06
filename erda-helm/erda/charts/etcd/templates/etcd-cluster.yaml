@@ -77,10 +77,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
+          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
           - --listen-client-urls=https://$(POD_IP):2379
           - --listen-metrics-urls=https://$(POD_IP):2381
           - --listen-peer-urls=https://$(POD_IP):2380
@@ -215,10 +215,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
+          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
           - --listen-client-urls=https://$(POD_IP):2379
           - --listen-metrics-urls=https://$(POD_IP):2381
           - --listen-peer-urls=https://$(POD_IP):2380
@@ -353,10 +353,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.cluster.local:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
+          - --initial-cluster=erda-etcd-0=https://erda-etcd-0.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380,erda-etcd-1=https://erda-etcd-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380,erda-etcd-2=https://erda-etcd-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
           - --listen-client-urls=https://$(POD_IP):2379
           - --listen-metrics-urls=https://$(POD_IP):2381
           - --listen-peer-urls=https://$(POD_IP):2380

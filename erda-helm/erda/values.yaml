@@ -9,6 +9,8 @@ global:
   imagePullSecrets: [ ]
   # cluster access domain
   domain: erda.io
+  kubernetes:
+    serviceDNSDomain: cluster.local
 
 tags:
   work: false
@@ -327,7 +329,7 @@ sonar:
 
 kms:
   # tag defines kms image tag.
-  tag: 1.0.0-20200608-f11445f
+  tag: 1.3.0-alpha-20210903152500-a3196f34
   # replicas defines the number of kms instance.
   replicas:
   # resources defines resources requests and limits for pod

@@ -73,7 +73,7 @@ spec:
           - name: ZOO_PORT
             value: '2181'
           - name: ZOO_SERVERS
-            value: server.2=erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.3=erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.1=0.0.0.0:2888:3888
+            value: server.2=erda-zookeeper-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2888:3888 server.3=erda-zookeeper-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2888:3888 server.1=0.0.0.0:2888:3888
           - name: ZOO_SYNC_LIMIT
             value: '2'
           - name: ZOO_TICK_TIME
@@ -199,7 +199,7 @@ spec:
           - name: ZOO_PORT
             value: '2181'
           - name: ZOO_SERVERS
-            value: server.1=erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.3=erda-zookeeper-3.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.2=0.0.0.0:2888:3888
+            value: server.1=erda-zookeeper-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2888:3888 server.3=erda-zookeeper-3.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2888:3888 server.2=0.0.0.0:2888:3888
           - name: ZOO_SYNC_LIMIT
             value: '2'
           - name: ZOO_TICK_TIME
@@ -325,7 +325,7 @@ spec:
           - name: ZOO_PORT
             value: '2181'
           - name: ZOO_SERVERS
-            value: server.1=erda-zookeeper-1.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.2=erda-zookeeper-2.{{ .Release.Namespace }}.svc.cluster.local:2888:3888 server.3=0.0.0.0:2888:3888
+            value: server.1=erda-zookeeper-1.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2888:3888 server.2=erda-zookeeper-2.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2888:3888 server.3=0.0.0.0:2888:3888
           - name: ZOO_SYNC_LIMIT
             value: '2'
           - name: ZOO_TICK_TIME

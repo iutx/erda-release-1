@@ -31,7 +31,7 @@ spec:
           MIGRATION_MYSQL_PASSWORD: {{ .Values.mysql.custom.password }}
           MIGRATION_MYSQL_DBNAME: {{ .Values.mysql.custom.database }}
           {{- else }}
-          MIGRATION_MYSQL_HOST: erda-mysql.{{ .Release.Namespace }}.svc.cluster.local
+          MIGRATION_MYSQL_HOST: erda-mysql.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
           MIGRATION_MYSQL_PORT: "3306"
           MIGRATION_MYSQL_USERNAME:  {{ .Values.mysql.user }}
           MIGRATION_MYSQL_PASSWORD: {{ .Values.mysql.password }}
@@ -1341,7 +1341,7 @@ spec:
             expose: false
             default: false
         envs:
-          CASSANDRA_EXPORTER_JMX_ADDR: addon-cassandra-exporter-jmx.default.svc.cluster.local
+          CASSANDRA_EXPORTER_JMX_ADDR: addon-cassandra-exporter-jmx.default.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}
           CASSANDRA_JOLOKIA_PORT: "8778"
           CLUSTER_PATH: /rootfs/etc/cluster-node
           COLLECTOR_AUTH_PASSWORD: G$9767bP32drYFPWrK4XMLRMTatiM6cU

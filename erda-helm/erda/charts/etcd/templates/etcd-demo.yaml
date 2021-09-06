@@ -57,10 +57,10 @@ spec:
           command:
           - etcd
           - --enable-pprof=true
-          - --advertise-client-urls=https://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2379
+          - --advertise-client-urls=https://erda-etcd.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2379
           - --data-dir=/var/lib/etcd
-          - --initial-advertise-peer-urls=https://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2380
-          - --initial-cluster=erda-etcd=https://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2380
+          - --initial-advertise-peer-urls=https://erda-etcd.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
+          - --initial-cluster=erda-etcd=https://erda-etcd.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:2380
           - --listen-client-urls=https://0.0.0.0:2379
           - --listen-metrics-urls=https://0.0.0.0:2381
           - --listen-peer-urls=https://0.0.0.0:2380

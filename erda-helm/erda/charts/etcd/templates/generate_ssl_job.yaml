@@ -24,9 +24,11 @@ spec:
           value: erda-etcd
         - name: ERDA_NAMESPACE
           value: {{ .Release.Namespace }}
+        - name: KUBERNETES_SERVICE_DNS_DOMAIN
+          value: {{ .Values.global.kubernetes.serviceDNSDomain }}
         - name: ERDA_SIZE
           value: {{ .Values.global.size | default "demo" }}
-        image: {{ .Values.global.image.repository}}/etcd_ssl_gen:v0.2.0
+        image: {{ .Values.global.image.repository}}/etcd_ssl_gen:20210903-4e40b2f
         imagePullPolicy: Always
         name: etcd-ssl-generator
         resources:

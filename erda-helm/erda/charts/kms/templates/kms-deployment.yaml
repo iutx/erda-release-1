@@ -45,19 +45,6 @@ spec:
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
       {{- end }}
-      initContainers:
-        - name: erda-etcd-healthy
-          image: {{ .Values.global.image.repository }}/addon-kms:{{ .Values.tag }}
-          imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
-          {{- if eq .Values.global.size "demo" }}
-          command: [ "sh", "-c", "curl --cacert /certs/etcd-ca.pem --cert /certs/etcd-client.pem --key /certs/etcd-client-key.pem --connect-timeout 3 --retry 10 --retry-delay 5 https://erda-etcd.{{ .Release.Namespace }}.svc.cluster.local:2379/health" ]
-          {{- else }}
-          command: [ "sh", "-c", "curl --cacert /certs/etcd-ca.pem --cert /certs/etcd-client.pem --key /certs/etcd-client-key.pem --connect-timeout 3 --retry 10 --retry-delay 5 https://erda-etcd-0.{{ .Release.Namespace }}.svc.cluster.local:2379/health" ]
-          {{- end }}
-          volumeMounts:
-            - mountPath: /certs/
-              name: etcd-client-secret
-              readOnly: true
       containers:
         - name: erda-kms
           image: {{ .Values.global.image.repository }}/addon-kms:{{ .Values.tag }}
