@@ -28,7 +28,7 @@ spec:
       {{- end }}
       serviceAccountName: erda-operator
       containers:
-      - image: {{ .Values.global.image.repository }}/erda-operator:{{ .Values.erda.operator.tag }}
+      - image: {{ .Values.global.image.repository }}/dice-operator:{{ .Values.erda.operator.tag }}
         imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
         name: erda-operator
         env:

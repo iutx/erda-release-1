@@ -29,7 +29,17 @@ data:
   {{- if .Values.registry.custom.nodeName }}
   REGISTRY_ADDR: {{ .Values.registry.custom.nodeIP }}:5000
   {{- else }}
-  REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.{{ .Values.global.kubernetes.serviceDNSDomain }}:5000
+  {{- if .Values.registry.custom.address }}
+  REGISTRY_ADDR: {{ .Values.registry.custom.address }}
+  {{- if .Values.registry.custom.username }}
+  REGISTRY_USERNAME: {{ .Values.registry.custom.username }}
+  {{- end }}
+  {{- if .Values.registry.custom.password }}
+  REGISTRY_PASSWORD: {{ .Values.registry.custom.password }}
+  {{- end }}
+  {{- else }}
+  REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.cluster.local:5000
+  {{- end }}
   {{- end }}
   {{- if not .Values.tags.work }}
   ES_SECURITY_ENABLE: "false"

@@ -13,19 +13,19 @@ global:
     serviceDNSDomain: cluster.local
 
 tags:
-  work: false
+  worker: false
   master: true
 
 erda:
   # the name of cluster which erda installed
-  clusterName: erda
+  clusterName: local-cluster
   # masterCluster config
   masterCluster:
     domain:
     protocol:
   # operator defines image tag and resources used for erda operator
   operator:
-    tag: v1.2.1-20210824-d076ae5
+    tag: 1.3-20210926-0c5d99b
     resources:
       requests:
         cpu: 10m
@@ -46,16 +46,18 @@ erda:
       password:
   # tags defines image tag used for erda component
   tags:
-    init: 20210823-ee83212
-    erda: 1.2-20210824-767d299
+    init: 1.3.0-20211012
+    erda: 1.3.0-stable-20211014105622-eb93b47
+    clusterAgent: 1.3.0-stable-20211012090548-a43be7d
     uc: dice-1.1-20210630-f4d63b99
-    ui: 1.2-20210824-ba7fad81b8bcdd06501e4c8e0244b970c7fcf51d
-    telegraf: 1.2-20210823-24b909c
-    filebeat: 1.2-20210817-51855f8
+    ui: 1.3.0-beta-20211010063001-19f96ef
+    telegraf: 1.3.0-beta-20211010020109-9937f9c
+    filebeat: 1.3.0-beta-20211010015632-6d2cd2e
     analyzer:
-      alert: 1.2.0-20210817-116eeae
-      error: 1.2.0-20210817-116eeae
-      metrics: 1.2.0-20210817-116eeae
+      alert: 1.3.0-beta-20211009055723-06ca0a4
+      error: 1.3.0-beta-20211009055846-06ca0a4
+      metrics: 1.3.0-beta-20211009055729-06ca0a4
+      tracing: 1.3.0-beta-20211009055725-06ca0a4
   # component defines replicas and resources config used for erda component
   component:
     admin:
@@ -65,7 +67,7 @@ erda:
         mem:
         max_cpu:
         max_mem:
-    clusterManageer:
+    clusterManager:
       replicas:
       resources:
         cpu:
@@ -193,6 +195,20 @@ erda:
         max_cpu:
         max_mem:
     analyzerMetricsTask:
+      replicas:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerTracing:
+      resources:
+        cpu:
+        mem:
+        max_cpu:
+        max_mem:
+    analyzerTracingTask:
+      replicas:
       resources:
         cpu:
         mem:
@@ -241,6 +257,7 @@ erda:
         max_cpu:
         max_mem:
     pipeline:
+      replicas:
       resources:
         cpu:
         mem:
@@ -307,8 +324,13 @@ registry:
       cpu:
       memory:
   custom:
+    # deploy registry with host mode
     nodeName:
     nodeIP:
+    # setting custom registry auth info
+    address:
+    username:
+    password:
 
 
 sonar:

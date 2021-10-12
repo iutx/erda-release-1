@@ -144,7 +144,7 @@ Erda helm chart 包支持两种部署模式（`prod`和`demo`），对于资源�
 
 | 参数 | 描述 | 默认值 |
 |:----|:---|:---:|
-| kafka.tag | kafka 镜像的 tag | 1.1.0-20210323-be01a9b |
+| kafka.tag | kafka 镜像的 tag | / |
 | kafka.storageClassName | 存储 StorageClass 的名称 | "dice-local-volume" |
 | kafka.capacity | kafka 单节点存储容量 | **prod**: 100Gi<br>**demo**: 16Gi |
 | kafka.javaOpts | kafka JAVA_OPTS (建议设置为 0.75 * resources.limits.memory )| **prod**: "-Xms6144m -Xmx6144m" <br>**demo**: "-Xms1024m -Xmx1024m" |
@@ -173,7 +173,7 @@ Erda helm chart 包支持两种部署模式（`prod`和`demo`），对于资源�
 
 | 参数 | 描述 | 默认值 |
 |:----|:---|:---:|
-| kms.tag | kms 镜像的 tag | 1.0.0-20200608-f11445f |
+| kms.tag | kms 镜像的 tag | / |
 | kms.replicas | 高可用部署时 kms 实例副本数量 | **prod**: 2<br>**demo**: 1 |
 | kms.resources.requests.cpu | kms 实例的 cpu 资源请求数量 | **prod**: 500m<br>**demo**: 100m |
 | kms.resources.requests.memory | kms 实例的 memory 资源请求数量 | **prod**: 1Gi<br>**demo**: 256Mi |
@@ -192,7 +192,7 @@ Erda helm chart 包支持两种部署模式（`prod`和`demo`），对于资源�
 
 | 参数 | 描述 | 默认值 |
 |:----|:---|:---:|
-| mysql.tag | mysql 镜像的 tag | 5.7.34 |
+| mysql.tag | mysql 镜像的 tag | / |
 | mysql.user | 数据库访问用户名| erda  |
 | mysql.database | 据库访问目标数据库 | erda |
 | mysql.password | 数据库访问密码| password |
@@ -248,7 +248,7 @@ mysql:
 
 | 参数 | 描述 | 默认值 |
 |:----|:---|:---:|
-| redis.redisOperator.tag | redis operator 镜像的 tag | 1.0.0-20200723-1a7a9f14 |
+| redis.redisOperator.tag | redis operator 镜像的 tag | / |
 | redis.redisOperator.resources.requests.cpu | redis operator 实例的 cpu 资源请求数量 | 10m |
 | redis.redisOperator.resources.requests.memory | redis operator 实例的 memory 资源请求数量 | 10Mi |
 | redis.redisOperator.resources.limits.cpu | redis operator 实例的 cpu 资源限制数量 | 500m |
@@ -331,7 +331,7 @@ mysql:
 
 | 参数 | 描述 | 默认值 |
 |:----|:---|:---:|
-| volume-provisioner.tag | volume-provisioner 镜像的 tag | 1.0.0-20210416-1a3758f |
+| volume-provisioner.tag | volume-provisioner 镜像的 tag | / |
 | volume-provisioner.provisioner.local.hostpath | local volume 卷使用此挂载点作为存储卷来源 | /data |
 | volume-provisioner.provisioner.nfs.hostpath | nfs volume 卷使用此挂载点作为存储卷来源 | /netdata|
 | volume-provisioner.resources.requests.cpu | volume-provisioner 实例的 cpu 资源请求数量 | 10m |
@@ -354,15 +354,15 @@ mysql:
 | erda.operator.resources.limits.memory | 设置 erda-operator 实例 Pod 的 Memory 资源限制值 | "128Mi" |
 | erda.clusterConfig.protocol | 声明当前 erda 集群的请求协议，http/https/http,https | - |
 | erda.clusterConfig.clusterType | erda 集群标识，比如 Kubernetes, EDAS | kubernetes |
-| erda.tags.init | erda 初始化任务镜像 tag | init-image:1.0.0-20210510-21a3c66 |
-| erda.tags.erda | erda 组件镜像 tag | erda:1.0.0-20210510-d7dd555 |
-| erda.tags.uc | erda uc 组件镜像 tag | erda-uc:1.0.0-20210425-d4c5a312 |
-| erda.tags.ui  | erda ui-ce 组件镜像 tag | erda-ui:1.0.0-20210508-f228247 |
-| erda.tags.telegraf | erda telegraf, telegraf-platform, telegraf-app 组件镜像 tag | telegraf:1.0.0-20210510-dc02a9d |
-| erda.tags.filebeat | erda filebeat 组件镜像 tag | filebeat:1.0.0-20210422-5b97371 |
-| erda.tags.analyzer.alert | erda analyzer-alert,  analyzer-alert-task  组件镜像 tag | erda-analyzer-alert:1.0.0-20210422-69e9f84 |
-| erda.tags.analyzer.error | erda analyzer-error-insight,analyzer-error-insight-task 组件镜像 tag | erda-analyzer-error-insight:1.0.0-20210422-69e9f84 |
-| erda.tags.analyzer.metrics | erda analyzer-metrics 组件镜像 tag | erda-analyzer-metrics:1.0.0-20210422-69e9f84 |
+| erda.tags.init | erda 初始化任务镜像 tag | - |
+| erda.tags.erda | erda 组件镜像 tag | - |
+| erda.tags.uc | erda uc 组件镜像 tag | - |
+| erda.tags.ui  | erda ui-ce 组件镜像 tag | - |
+| erda.tags.telegraf | erda telegraf, telegraf-platform, telegraf-app 组件镜像 tag | - |
+| erda.tags.filebeat | erda filebeat 组件镜像 tag | - |
+| erda.tags.analyzer.alert | erda analyzer-alert,  analyzer-alert-task  组件镜像 tag | - |
+| erda.tags.analyzer.error | erda analyzer-error-insight,analyzer-error-insight-task 组件镜像 tag | - |
+| erda.tags.analyzer.metrics | erda analyzer-metrics 组件镜像 tag | - |
 | erda.component.admin.replicas | erda admin 组件副本数 | 2 |
 | erda.component.admin.resources.cpu | erda admin 组件实例 Pod 的 CPU 资源请求值 | **prod**: "100m"<br>**demo**: "100m" |
 | erda.component.admin.resources.mem | erda admin 组件实例 Pod 的 Memory 资源请求值 | **prod**:"128Mi"<br>**demo**: "128Mi" |
@@ -457,10 +457,20 @@ mysql:
 | erda.component.analyzerMetrics.resources.mem | erda analyzerMetrics 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.analyzerMetrics.resources.max_cpu | erda analyzerMetrics 组件实例 Pod 的 CPU 资源限制值 | "1" |
 | erda.component.analyzerMetrics.resources.max_mem | erda analyzerMetrics 组件实例 Pod 的 Memory 资源限制值 | "2048Mi" |
+| erda.component.analyzerMetricsTask.resources.replicas | erda analyzerMetricsTask 组件副本数 | 2 |
 | erda.component.analyzerMetricsTask.resources.cpu | erda analyzerMetricsTask 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.analyzerMetricsTask.resources.mem | erda analyzerMetricsTask 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.analyzerMetricsTask.resources.max_cpu | erda analyzerMetricsTask 组件实例 Pod 的 CPU 资源限制值 | "1" |
 | erda.component.analyzerMetricsTask.resources.max_mem | erda analyzerMetricsTask 组件实例 Pod 的 Memory 资源限制值 | "2048Mi" |
+| erda.component.analyzerTracing.resources.replicas | erda analyzerMetrics 组件副本数 | 2 |
+| erda.component.analyzerTracing.resources.cpu | erda analyzerMetrics 组件实例 Pod 的 CPU 资源请求值 | "100m" |
+| erda.component.analyzerTracing.resources.mem | erda analyzerMetrics 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
+| erda.component.analyzerTracing.resources.max_cpu | erda analyzerMetrics 组件实例 Pod 的 CPU 资源限制值 | "1" |
+| erda.component.analyzerTracing.resources.max_mem | erda analyzerMetrics 组件实例 Pod 的 Memory 资源限制值 | "1024Mi" |
+| erda.component.analyzerTracingTask.resources.cpu | erda analyzerMetricsTask 组件实例 Pod 的 CPU 资源请求值 | "100m" |
+| erda.component.analyzerTracingTask.resources.mem | erda analyzerMetricsTask 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
+| erda.component.analyzerTracingTask.resources.max_cpu | erda analyzerMetricsTask 组件实例 Pod 的 CPU 资源限制值 | "1" |
+| erda.component.analyzerTracingTask.resources.max_mem | erda analyzerMetricsTask 组件实例 Pod 的 Memory 资源限制值 | "2048Mi" |
 | erda.component.actionRunnerScheduler.resources.cpu | erda actionRunnerScheduler 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.actionRunnerScheduler.resources.mem | erda actionRunnerScheduler 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.actionRunnerScheduler.resources.max_cpu | erda actionRunnerScheduler 组件实例 Pod 的 CPU 资源限制值 | "300m" |
@@ -489,6 +499,7 @@ mysql:
 | erda.component.gittar.resources.mem | erda gittar 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.gittar.resources.max_cpu | erda gittar 组件实例 Pod 的 CPU 资源限制值 | "1" |
 | erda.component.gittar.resources.max_mem | erda gittar 组件实例 Pod 的 Memory 资源限制值 | "1536Mi" |
+| erda.component.pipeline.resources.replicas | erda pipeline 组件副本数 | 2 |
 | erda.component.pipeline.resources.cpu | erda pipeline 组件实例 Pod 的 CPU 资源请求值 | "100m" |
 | erda.component.pipeline.resources.mem | erda pipeline 组件实例 Pod 的 Memory 资源请求值 | "128Mi" |
 | erda.component.pipeline.resources.max_cpu | erda pipeline 组件实例 Pod 的 CPU 资源限制值 | "1" |
