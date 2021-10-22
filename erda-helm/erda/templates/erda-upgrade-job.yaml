@@ -1,3 +1,4 @@
+{{- if not .Values.tags.worker }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -42,7 +43,7 @@ spec:
               value: Asia/Shanghai
             - name: MIGRATION_DEBUGSQL
               value: "false"
-            - name: MIGRATION_ERDA_LINT
+            - name: MIGRATION_SKIP_LINT
               value: "true"
           image:
             {{ .Values.global.image.repository }}/init-image:{{.Values.erda.tags.init}}
@@ -57,3 +58,4 @@ spec:
           key: node-role.kubernetes.io/master
         - effect: NoSchedule
           key: node-role.kubernetes.io/lb
+{{- end }}

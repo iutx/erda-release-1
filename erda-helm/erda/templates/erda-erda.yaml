@@ -38,7 +38,7 @@ spec:
           MIGRATION_MYSQL_DBNAME: {{ .Values.mysql.database }}
           {{- end }}
           MIGRATION_DEBUGSQL: "false"
-          MIGRATION_ERDA_LINT: "true"
+          MIGRATION_SKIP_LINT: "true"
         image:
           {{ .Values.global.image.repository }}/init-image:{{ .Values.erda.tags.init }}
         resources:
@@ -60,6 +60,7 @@ spec:
       CORE_SERVICES_ADDR: core-services:9526
       OPENAPI_ADDR: openapi:9529
       CMP_ADDR: cmp:9027
+      ORCHESTRATOR_ADDR: orchestrator:8081
     services:
       {{- if not .Values.tags.worker }}
       action-runner-scheduler:
@@ -212,6 +213,9 @@ spec:
           - port: 9028
             protocol: "TCP"
             l4_protocol: "TCP"
+          - port: 9029
+            protocol: "TCP"
+            l4_protocol: "TCP"
         envs:
           ERDA_HELM_CHART_VERSION: 1.1.0
           ERDA_NAMESPACE: {{ .Release.Namespace }}
@@ -221,8 +225,10 @@ spec:
           cpu: {{ .Values.erda.component.cmp.resources.cpu | default "0.1" }}
           mem: {{ .Values.erda.component.cmp.resources.mem | default "1024" }}
           max_cpu: {{ .Values.erda.component.cmp.resources.max_cpu | default "1" }}
-          {{- if .Values.erda.component.cmp.resources.max_mem }}
-          max_mem: {{ .Values.erda.component.cmp.resources.max_mem }}
+          {{- if ne .Values.global.size "demo" }}
+          max_mem: {{ .Values.erda.component.cmp.resources.max_mem | default "3072" }}
+          {{- else }}
+          max_mem: {{ .Values.erda.component.cmp.resources.max_mem | default "1024" }}
           {{- end }}
           network:
             mode: container
@@ -310,8 +316,8 @@ spec:
         resources:
           cpu: {{ .Values.erda.component.coreServices.resources.cpu | default "0.1" }}
           mem: {{ .Values.erda.component.coreServices.resources.mem | default "128" }}
-          max_cpu: {{ .Values.erda.component.coreServices.resources.max_cpu | default "0.3" }}
-          max_mem: {{ .Values.erda.component.coreServices.resources.max_mem | default "512" }}
+          max_cpu: {{ .Values.erda.component.coreServices.resources.max_cpu | default "1" }}
+          max_mem: {{ .Values.erda.component.coreServices.resources.max_mem | default "1024" }}
           network:
             mode: container
         binds:
@@ -634,6 +640,9 @@ spec:
             l4_protocol: TCP
             expose: false
             default: false
+          - port: 7080
+            protocol: "TCP"
+            l4_protocol: "TCP"
         envs:
           DEBUG: "false"
           MSP_ADDR: msp:8080
