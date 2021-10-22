@@ -6,7 +6,7 @@ metadata:
 data:
   DICE_CLUSTER_NAME:  {{ .Values.erda.clusterName }}
   DICE_CLUSTER_TYPE: {{ .Values.erda.clusterConfig.clusterType }}
-  {{- if .Values.tags.work }}
+  {{- if .Values.tags.worker }}
   DICE_IS_EDGE: "true"
   {{- else }}
   DICE_IS_EDGE: "false"

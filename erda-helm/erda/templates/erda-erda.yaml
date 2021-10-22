@@ -4,7 +4,7 @@ metadata:
   name: erda
   namespace: {{ .Release.Namespace }}
 spec:
-  {{- if not .Values.tags.work }}
+  {{- if not .Values.tags.worker }}
   customDomain:
     openapi: openapi.{{ .Values.global.domain }}
     ui: {{ .Values.global.domain }}, *.{{ .Values.global.domain }}
@@ -61,7 +61,7 @@ spec:
       OPENAPI_ADDR: openapi:9529
       CMP_ADDR: cmp:9027
     services:
-      {{- if not .Values.tags.work }}
+      {{- if not .Values.tags.worker }}
       action-runner-scheduler:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
@@ -855,7 +855,7 @@ spec:
     addons: { }
     values: { }
 
-  {{- if not .Values.tags.work }}
+  {{- if not .Values.tags.worker }}
   diceUI:
     version: "2.0"
     meta:

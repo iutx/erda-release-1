@@ -14,7 +14,7 @@ Erda helm chart 包支持两种部署模式（`prod`和`demo`），对于资源�
 | global.image.imagePullPolicy | 镜像拉取策略 | IfNotPresent |
 | global.imagePullSecrets | 私有镜像拉取使用 secrets | [] |
 | global.domain | erda 当前集群绑定的泛域名 | "erda.io" |
-| tags.work | / | / |
+| tags.worker | / | / |
 | tags.master | / | / |
 
 

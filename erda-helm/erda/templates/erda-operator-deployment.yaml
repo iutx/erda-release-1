@@ -40,7 +40,7 @@ spec:
           value: {{ .Release.Namespace }}
         - name: ENABLE_CONFIGMAP_NAMESPACE
           value: {{ .Release.Namespace }}
-        {{- if .Values.tags.work }}
+        {{- if .Values.tags.worker }}
         - name: ENABLE_ETCD_SECRET
           value: disable
         {{- end }}

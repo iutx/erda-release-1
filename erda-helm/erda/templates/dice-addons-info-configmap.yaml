@@ -41,7 +41,7 @@ data:
   REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.cluster.local:5000
   {{- end }}
   {{- end }}
-  {{- if not .Values.tags.work }}
+  {{- if not .Values.tags.worker }}
   ES_SECURITY_ENABLE: "false"
   ES_SECURITY_PASSWORD: ""
   ES_SECURITY_USERNAME: ""
