@@ -110,18 +110,18 @@ spec:
           resources:
             {{- if eq .Values.global.size "demo" }}
             requests:
-              cpu: {{ .Values.resources.requests.cpu| default "100m" | quote }}
+              cpu: {{ .Values.resources.requests.cpu| default "200m" | quote }}
               memory: {{ .Values.resources.requests.memory | default "512Mi" }}
             limits:
-              cpu: {{ .Values.resources.limits.cpu | default "500m" | quote }}
-              memory: {{ .Values.resources.limits.memory | default "2048Mi" }}
+              cpu: {{ .Values.resources.limits.cpu | default "1" | quote }}
+              memory: {{ .Values.resources.limits.memory | default "3096Mi" }}
             {{- else }}
             requests:
               cpu: {{ .Values.resources.requests.cpu | default "2" | quote }}
               memory: {{ .Values.resources.requests.memory | default "4Gi" | quote }}
             limits:
               cpu: {{ .Values.resources.limits.cpu |  default "4" | quote }}
-              memory: {{ .Values.resources.limits.memory | default "8Gi" | quote }}
+              memory: {{ .Values.resources.limits.memory | default "12Gi" | quote }}
             {{- end }}
           securityContext:
             capabilities:
