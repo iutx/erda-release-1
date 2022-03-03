@@ -48,10 +48,10 @@ erda:
   # tags defines image tag used for erda component
   tags:
     init: 2.0.0-20220302
-    erda: 2.0-beta-20220303025901-9d783ae
-    clusterAgent: 2.0-beta-20220302094620-cbb8ecc
+    erda: 2.0-beta-20220304100121-6a73078
+    clusterAgent: 2.0-beta-20220304095900-6a73078
     uc: dice-1.1-20210630-f4d63b99
-    ui: 2.0-beta-20220303105044-fa77942
+    ui: 2.0-20220304165510-49152b9
 
     telegraf: 2.0-beta-20220302175515-1065045
     fluentBit: 2.0-beta-20220302175401-af2cafb

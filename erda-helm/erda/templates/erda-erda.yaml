@@ -874,7 +874,6 @@ spec:
             expose: true
             default: false
         envs:
-          ENABLE_APPLY_ORG: "true"
           COLLECTOR_ADDR: collector:7076
           COLLECTOR_PUBLIC_ADDR: collector:7076
           ENABLE_BIGDATA: "false"
@@ -1219,11 +1218,7 @@ spec:
         binds:
           - /netdata/spot-v2/analyzer/metrics:/data:rw
         deployments:
-          {{- if eq .Values.global.size "demo" }}
-          replicas: {{ .Values.erda.component.analyzerMetricsTask.replicas | default "1" }}
-          {{- else }}
           replicas: {{ .Values.erda.component.analyzerMetricsTask.replicas | default "2" }}
-          {{- end }}
         health_check:
           http: { }
           exec:
