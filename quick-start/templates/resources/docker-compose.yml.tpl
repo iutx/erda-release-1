@@ -148,7 +148,7 @@ services:
       - ./env
     environment:
       - ERDA_HELM_CHART_VERSION=1.1.0
-      - ERDA_NAMESPACE=default
+      - ERDA_NAMESPACE=erda-system
       - UC_CLIENT_ID=dice
       - UC_CLIENT_SECRET=secret
     ports:
@@ -368,6 +368,7 @@ services:
     environment:
       - DEBUG=false
       - TENANT_GROUP_KEY=58dcbf490ef3
+      - ENABLE_SPECIFIED_K8S_NAMESPACE=erda-system
     ports:
       - "8081"
       - "7080"
