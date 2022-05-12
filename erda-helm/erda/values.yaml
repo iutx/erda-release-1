@@ -25,7 +25,7 @@ erda:
     protocol:
   # operator defines image tag and resources used for erda operator
   operator:
-    tag: "2.0"
+    tag: "2.1"
     resources:
       requests:
         cpu: 10m
@@ -47,19 +47,19 @@ erda:
     clusterAccessKey:
   # tags defines image tag used for erda component
   tags:
-    init: 2.0.0-20220302
-    erda: 2.0-beta-20220304100121-6a73078
-    clusterAgent: 2.0-beta-20220304095900-6a73078
+    init: 2.1-04280944
+    erda: 2.1-beta-20220509031728-0821ee5
+    clusterAgent: 2.1-beta-20220509032917-0821ee5
     uc: dice-1.1-20210630-f4d63b99
-    ui: 2.0-20220304165510-49152b9
+    ui: 2.1-20220512151830-74750f7
 
-    telegraf: 2.0-beta-20220302175515-1065045
-    fluentBit: 2.0-beta-20220302175401-af2cafb
+    telegraf: 2.1-20220422112404-2cc21a1
+    fluentBit: 2.1-20220506172410-ae284e0
     analyzer:
-      alert: 2.0.0-beta-20220301054202-7f22f8b
-      error: 2.0.0-beta-20220301054057-7f22f8b
-      metrics: 2.0.0-beta-20220301054057-7f22f8b
-      tracing: 2.0.0-beta-20220301054057-7f22f8b
+      alert: 2.1.0-beta-20220422033806-4964406
+      error: 2.1.0-beta-20220422033857-4964406
+      metrics: 2.1.0-beta-20220422033807-4964406
+      tracing: 2.1.0-beta-20220422034503-4964406
   # component defines replicas and resources config used for erda component
   component:
     admin:

@@ -408,35 +408,6 @@ spec:
             path: /_api/health
             duration: 120
           exec: { }
-      eventbox:
-        image:
-          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/eventbox
-        ports:
-          - port: 9528
-            protocol: TCP
-            l4_protocol: TCP
-            expose: false
-            default: false
-        envs:
-          DEBUG: "false"
-        resources:
-          cpu: {{ .Values.erda.component.eventbox.resources.cpu | default "0.1" }}
-          mem: {{ .Values.erda.component.eventbox.resources.mem | default "128" }}
-          max_cpu: {{ .Values.erda.component.eventbox.resources.max_cpu | default "2" }}
-          max_mem: {{ .Values.erda.component.eventbox.resources.max_mem | default "2560" }}
-          network:
-            mode: container
-        deployments:
-          replicas: 1
-          labels:
-            GROUP: dice
-        health_check:
-          http:
-            port: 9528
-            path: /api/dice/eventbox/version
-            duration: 120
-          exec: { }
       gittar:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
@@ -704,6 +675,7 @@ spec:
         envs:
           DEBUG: "false"
           PIPELINE_STORAGE_URL: file:///devops/storage
+          REFRESH_CLUSTERS_INTERVAL: "1m"
         resources:
           cpu: {{ .Values.erda.component.pipeline.resources.cpu | default "0.1" }}
           mem: {{ .Values.erda.component.pipeline.resources.mem | default "128" }}
@@ -794,7 +766,6 @@ spec:
           - port: 12580
             protocol: TCP
             l4_protocol: TCP
-            expose: true
             default: false
         envs:
           DEBUG: "false"
@@ -820,8 +791,6 @@ spec:
           {{- end }}
           labels:
             GROUP: devops
-        expose:
-          - 12580
         health_check:
           http:
             port: 12580
@@ -1309,7 +1278,7 @@ spec:
             expose: true
             default: false
         envs:
-          REDIRECT_URL_WHITE_LIST: http://uc.{{ .Values.global.domain }}/oauth/authorize,http://uc.{{ .Values.global.domain }}/oauth/authorize,https://uc.{{ .Values.global.domain }}/oauth/authorize
+          REDIRECT_URL_WHITE_LIST: http://uc.{{ .Values.global.domain }}/oauth/authorize,https://uc.{{ .Values.global.domain }}/oauth/authorize
           SPRING_PROFILES_ACTIVE: docker
           SMS_ENABLE_NOTICE_MOCK: "false"
           JAVA_OPTS: -Xms1433m -Xmx1433m
@@ -1514,7 +1483,7 @@ spec:
           network:
             mode: container
         binds:
-          - {{ .Values.erda.component.fluentBit.binds.docker_root | default "/var/lib/docker" }}/containers:/var/lib/docker/containers:ro
+          - {{ .Values.erda.component.fluentBit.binds.docker_root | default "/var/lib/docker" }}/containers:{{ .Values.erda.component.fluentBit.binds.docker_root | default "/var/lib/docker" }}/containers:ro
           - /data/spot-v2/fluent-bit:/data/spot/fluent-bit:rw
           - /var/log:/var/log:ro
         deployments:
