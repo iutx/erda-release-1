@@ -1,7 +1,7 @@
 apiVersion: v2
 name: erda
-version: 2.0.0
-appVersion: 2.0.0
+version: 2.1.0
+appVersion: 2.1.0
 description: An open-source platform bases on Kubernetes that can deploy microservice applications.
 keywords:
   - Kubernetes
