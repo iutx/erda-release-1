@@ -105,15 +105,16 @@ Erda helm chart 包支持两种部署模式（`prod`和`demo`），对于资源�
 * **demo** 表示对应 demo 部署模式的参数默认值
 * **prod** 表示对应 prod 部署模式的参数默认值
 
-| 参数 | 描述 | 默认值 |
-|:----|:---|:---:|
-| etcd.tag | etcd 镜像的 tag | 3.3.15-0 |
-| etcd.storageClassName | 存储 StorageClass 的名称 | "dice-local-volume" |
-| etcd.capacity | etcd 单节点存储容量 | **prod**: 32Gi<br>**demo**: 8Gi |
-| etcd.resources.requests.cpu | etcd 实例的 cpu 资源请求数量 | **prod**: 1<br>**demo**: 100m |
-| etcd.resources.requests.memory | etcd 实例的 memory 资源请求数量 | **prod**: 2Gi<br>**demo**: 512Mi |
-| etcd.resources.limits.cpu | etcd 实例的 cpu 资源限制数量 | **prod**: 4<br>**demo**: 500m |
-| etcd.resources.limits.memory | etcd 实例的 memory 资源限制数量 | **prod**: 8Gi<br>**demo**: 2048Mi |
+| 参数                             | 描述                     |                默认值                |
+|:-------------------------------|:-----------------------|:---------------------------------:|
+| etcd.tag                       | etcd 镜像的 tag           |             3.3.15-0              |
+| etcd.storageClassName          | 存储 StorageClass 的名称    |        "dice-local-volume"        |
+| etcd.capacity                  | etcd 单节点存储容量           |  **prod**: 32Gi<br>**demo**: 8Gi  |
+| etcd.resources.requests.cpu    | etcd 实例的 cpu 资源请求数量    |   **prod**: 1<br>**demo**: 100m   |
+| etcd.resources.requests.memory | etcd 实例的 memory 资源请求数量 | **prod**: 2Gi<br>**demo**: 512Mi  |
+| etcd.resources.limits.cpu      | etcd 实例的 cpu 资源限制数量    |   **prod**: 4<br>**demo**: 500m   |
+| etcd.resources.limits.memory   | etcd 实例的 memory 资源限制数量 | **prod**: 8Gi<br>**demo**: 2048Mi |
+| etcd.tls.renew                 | etcd 证书更新              |               false               |
 
 
 ## Zookeeper 参数

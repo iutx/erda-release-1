@@ -539,3 +539,5 @@ etcd:
     limits:
       cpu:
       memory:
+  tls:
+    renew: false

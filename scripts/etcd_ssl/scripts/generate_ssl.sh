@@ -56,10 +56,11 @@ export ETCD_SERVER_KEY=`cat ${ssl_dir}/etcd-server-key.pem | base64 | tr -d "\n"
 export ETCD_CLIENT=`cat ${ssl_dir}/etcd-client.pem | base64 | tr -d "\n"`
 export ETCD_CLIENT_KEY=`cat ${ssl_dir}/etcd-client-key.pem | base64 | tr -d "\n"`
 
+mkdir ./secrets
 
-# compose secrets and helm values files from telmpate files
-envsubst < ./templates/etcd-server-secret.yaml > ./etcd-server-secret.yaml
-envsubst < ./templates/etcd-client-secret.yaml > ./etcd-client-secret.yaml
+# compose secrets and helm values files from template files
+envsubst < ./templates/etcd-server-secret.yaml > ./secrets/etcd-server-secret.yaml
+envsubst < ./templates/etcd-client-secret.yaml > ./secrets/etcd-client-secret.yaml
 
 
 

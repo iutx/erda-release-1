@@ -20,10 +20,8 @@ bin
 
 *package
 
-*/scripts/ssl
-*/scripts/bin
-*/scripts/erda-actions
-*/scripts/erda-addons
+scripts/ssl
+scripts/bin
 *third_party_package
 */docs
 *How-to-install-Erda*.md

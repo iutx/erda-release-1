@@ -25,3 +25,6 @@ resources:
   limits:
     cpu:
     memory:
+# tls configuration
+tls:
+  renew: false
