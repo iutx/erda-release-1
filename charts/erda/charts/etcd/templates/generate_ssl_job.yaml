@@ -28,7 +28,9 @@ spec:
           value: {{ .Values.global.kubernetes.serviceDNSDomain }}
         - name: ERDA_SIZE
           value: {{ .Values.global.size | default "demo" }}
-        image: {{ .Values.global.image.repository}}/etcd_ssl_gen:20210903-4e40b2f
+        - name: RENEW_ETCD_CERTS
+          value: {{ .Values.tls.renew | default "false" }}
+        image: {{ .Values.global.image.repository}}/etcd_ssl_gen:20220530091136-ac720b1
         imagePullPolicy: Always
         name: etcd-ssl-generator
         resources:
