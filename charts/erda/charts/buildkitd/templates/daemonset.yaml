@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels: {{ include "buildkitd.labels" . | nindent 4 }}
+  name: {{ template "buildkitd.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  selector:
+    matchLabels: {{ include "buildkitd.matchLables" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "buildkitd.matchLables" . | nindent 8 }}
+    spec:
+      {{- if .Values.affinity }}
+      affinity: {{ toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ template "buildkitd.name" . }}
+          image: {{.Values.global.image.repository}}/buildkit:v{{.Chart.Version}}
+          args:
+            - --addr
+            - unix:///run/user/1000/buildkit/buildkitd.sock
+            - --addr
+            - tcp://0.0.0.0:1234
+            - --oci-worker-snapshotter
+            - overlayfs
+            {{- if (include "buildkitd.useConfig" .) }}
+            - --config
+            - /etc/buildkit/buildkitd.toml
+            {{- end }}
+            - --tlscacert
+            - /certs/ca.pem
+            - --tlscert
+            - /certs/cert.pem
+            - --tlskey
+            - /certs/key.pem
+          # the probe below will only work after Release v0.6.3
+          readinessProbe:
+            exec:
+              command:
+                - buildctl
+                - --addr
+                - unix:///run/user/1000/buildkit/buildkitd.sock
+                - debug
+                - workers
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          # the probe below will only work after Release v0.6.3
+          livenessProbe:
+            exec:
+              command:
+                - buildctl
+                - --addr
+                - unix:///run/user/1000/buildkit/buildkitd.sock
+                - debug
+                - workers
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 1234
+          volumeMounts:
+            - name: certs
+              readOnly: true
+              mountPath: /certs
+            {{- if (include "buildkitd.useConfig" .) }}
+            - name: config
+              mountPath: /etc/buildkit
+            {{- end }}
+      volumes:
+        # buildkit-daemon-certs must contain ca.pem, cert.pem, and key.pem
+        - name: certs
+          secret:
+            secretName: {{ template "buildkitd.tlsDaemonCertSecret" . }}
+        {{- if (include "buildkitd.useConfig" .) }}
+        - name: config
+          configMap:
+            name: {{ template "buildkitd.configmapName" . }}
+            items:
+              - key: buildkitd.toml
+                path: buildkitd.toml
+        {{- end }}

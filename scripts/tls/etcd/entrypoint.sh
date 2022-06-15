@@ -6,7 +6,7 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 export ERDA_NAMESPACE=${ERDA_NAMESPACE:-"default"}
-export RENEW_ETCD_CERTS=${RENEW_ETCD_CERTS:-"false"}
+export RENEW_ETCD_CERTS=${RENEW_CERTS:-"false"}
 
 echo "erda namespace: ${ERDA_NAMESPACE}"
 echo "renew etcd certs: ${RENEW_ETCD_CERTS}"

@@ -1,0 +1,34 @@
+{{- if and .Values.certgen.rbac.create (include "erda.certgen.enabled" .) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "common.names.fullname" . }}-certgen
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+  labels: {{- include "common.labels.base" . | nindent 4 }}
+    app.kubernetes.io/component: erda-certgen
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "secrets" ]
+    verbs: [ "get", "create", "patch" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "common.names.fullname" . }}-certgen
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+  labels: {{- include "common.labels.base" . | nindent 4 }}
+    app.kubernetes.io/component: erda-certgen
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "common.names.fullname" . }}-certgen
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "erda.certgen.serviceAccountName" . }}
+{{- end }}

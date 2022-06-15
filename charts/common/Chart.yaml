@@ -1,0 +1,23 @@
+apiVersion: v2
+name: common
+description: A Library Helm Chart for grouping common logic between erda charts.
+keywords:
+  - erda
+  - common
+  - infrastructure
+  - library
+  - function
+  - helper
+sources:
+  - https://github.com/erda-project/erda-release
+  - https://www.erda.cloud
+type: library
+version: 0.1.0
+appVersion: "1.16.0"
+maintainers:
+  - name: Luobingli
+    email: luobily@gmail.com
+  - name: Wangzhuzhen
+    email: zhuzhenwang1984@gmail.com
+  - name: Liutianxiang
+    email: root@viper.run

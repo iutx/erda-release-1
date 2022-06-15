@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: {{ include "buildkitd.labels" . | nindent 4 }}
+  name: {{ template "buildkitd.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  ports:
+    - port: 1234
+      protocol: TCP
+  selector: {{ include "buildkitd.matchLables" . | nindent 4 }}

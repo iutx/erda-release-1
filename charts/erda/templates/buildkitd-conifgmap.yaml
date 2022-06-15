@@ -1,0 +1,10 @@
+{{- if and (include "erda.buildkitd.enabled" .) (not (include "erda.buildkitd.configmapExsited" .)) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "erda.buildkitd.configmapName" . }}
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  buildkitd.toml: |-
+    {{- include "erda.buildkitd.configuration" . | nindent 4 -}}
+{{- end -}}

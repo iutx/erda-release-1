@@ -1,0 +1,41 @@
+{{- if (include "erda.certgen.enabled" . ) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels: {{- include "common.labels.base" . | nindent 4 }}
+    app.kubernetes.io/component: erda-certgen
+  name: {{ include "common.names.fullname" . }}-certgen
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  backoffLimit: 3
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels: {{- include "common.labels.base" . | nindent 8 }}
+        app.kubernetes.io/component: erda-certgen
+    spec:
+      containers:
+        - env:
+            - name: ERDA_NAMESPACE
+              value: {{ .Release.Namespace | quote }}
+            - name: KUBERNETES_SERVICE_DNS_DOMAIN
+              value: {{ .Values.global.kubernetes.serviceDNSDomain }}
+          image: {{ include "erda.certgen.image" . }}
+          imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
+          name: erda-certgen
+          resources:
+            requests:
+              cpu: 10m
+              memory: 50Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      serviceAccountName: {{ include "erda.certgen.serviceAccountName" . }}
+{{- end }}

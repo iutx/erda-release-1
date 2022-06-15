@@ -18,7 +18,7 @@ mkdir -p "$ssl_dir"
 
 # TODO check openssl, ipcalc command
 numbits=2048
-days=3650
+days=18250
 config=''
 
 _gen_ca() {
