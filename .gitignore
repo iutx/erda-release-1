@@ -20,7 +20,6 @@ bin
 
 *package
 
-scripts/ssl
 scripts/bin
 *third_party_package
 */docs
@@ -30,3 +29,5 @@ erda/VERSION
 
 *aliyun_sc.yaml
 /quick-start/dist/
+
+*.tgz

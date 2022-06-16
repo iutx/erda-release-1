@@ -1,0 +1,10 @@
+{{- if (include "buildkitd.createConfigmap" .) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "buildkitd.configmapName" . }}
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  buildkitd.toml: |-
+    {{- .Values.configuration | nindent 4}}
+{{- end -}}
