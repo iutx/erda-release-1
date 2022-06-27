@@ -1,4 +1,4 @@
-{{- if and (include "erda.buildkitd.enabled" .) (not (include "erda.buildkitd.configmapExsited" .)) -}}
+{{- if (include "erda.buildkitd.enabled" .) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
