@@ -40,8 +40,7 @@ spec:
           MIGRATION_DEBUGSQL: "false"
           MIGRATION_SKIP_LINT: "true"
           MIGRATION_SKIP_SANDBOX: "true"
-        image:
-          {{ .Values.global.image.repository }}/init-image:{{ .Values.erda.tags.init }}
+        image: {{ .Values.global.image.repository }}/init-image:{{ .Values.erda.tags.init }}
         resources:
           cpu: 0.5
           mem: 128
@@ -55,7 +54,7 @@ spec:
       ETCDCTL_API: "3"
       MONITOR_ADDR: monitor:7096
       PIPELINE_ADDR: pipeline:3081
-      ADMIN_ADDR: admin:9095
+      ERDA_SERVER_ADDR: erda-server:9095
       MSP_ADDR: msp:8080
       DOP_ADDR: dop:9527
       CORE_SERVICES_ADDR: core-services:9526
@@ -66,54 +65,23 @@ spec:
       OTEL_TRACES_ENABLED: false
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://collector:7076/api/otlp/v1/traces
       OTEL_TRACES_SAMPLER_ARG: 0.1
+      CLUSTER_MANAGER_ADDR: cluster-manager:9094
+      CLUSTER_DIALER_ADDR: cluster-manager:80
     services:
       {{- if not .Values.tags.worker }}
-      action-runner-scheduler:
+      erda-server:
+        cmd: /erda/cmd/erda-server/bin
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/action-runner-scheduler
         ports:
-          - port: 9500
-            protocol: TCP
-            l4_protocol: TCP
-            expose: false
-            default: false
-        resources:
-          memory:
-          cpu: {{ .Values.erda.component.actionRunnerScheduler.resources.cpu | default "0.1" }}
-          mem: {{ .Values.erda.component.actionRunnerScheduler.resources.mem | default "128" }}
-          max_cpu: {{ .Values.erda.component.actionRunnerScheduler.resources.max_cpu | default "0.3" }}
-          {{- if .Values.erda.component.actionRunnerScheduler.resources.max_mem }}
-          max_mem: {{ .Values.erda.component.actionRunnerScheduler.resources.max_mem }}
-          {{- end }}
-          network:
-            mode: container
-        deployments:
-          replicas: 1
-          labels:
-            GROUP: devops
-        health_check:
-          http:
-            port: 9500
-            path: /healthz
-            duration: 120
-          exec: { }
-      admin:
-        image:
-          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/admin
-        ports:
-          - port: 9095
-            protocol: TCP
-            l4_protocol: TCP
-            expose: false
-            default: false
-          - port: 9096
-            protocol: TCP
-            l4_protocol: TCP
-          - port: 8096
-            protocol: TCP
-            l4_protocol: TCP
+        - port: 9095
+          protocol: TCP
+          l4_protocol: TCP
+          expose: false
+          default: false
+        - port: 8096
+          protocol: TCP
+          l4_protocol: TCP
         envs:
           DEBUG: "false"
         resources:
@@ -142,44 +110,22 @@ spec:
             path: /api/healthy
             duration: 120
           exec: { }
-      cluster-dialer:
+      cluster-manager:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/cluster-dialer
+        cmd: /erda/cmd/cluster-manager/bin
         ports:
           - port: 80
             protocol: TCP
             l4_protocol: TCP
-            expose: true
-            default: false
-        envs:
-          DEBUG: "false"
-        resources:
-          cpu: {{ .Values.erda.component.clusterDialer.resources.cpu | default "0.1" }}
-          mem: {{ .Values.erda.component.clusterDialer.resources.mem | default "128" }}
-          max_cpu: {{ .Values.erda.component.clusterDialer.resources.max_cpu | default "2" }}
-          max_mem: {{ .Values.erda.component.clusterDialer.resources.max_mem | default "2048" }}
-          network:
-            mode: container
-        deployments:
-          replicas: 1
-          labels:
-            GROUP: dice
-        expose:
-          - 80
-        health_check:
-          http: { }
-          exec: { }
-      cluster-manager:
-        image:
-          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/cluster-manager
-        ports:
           - port: 9094
             protocol: TCP
             l4_protocol: TCP
             expose: false
             default: false
+          - port: 9095
+            protocol: TCP
+            l4_protocol: TCP
         envs:
           DEBUG: "false"
         resources:
@@ -208,7 +154,7 @@ spec:
       cmp:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/cmp
+        cmd: /erda/cmd/cmp/bin
         ports:
           - port: 9027
             protocol: TCP
@@ -253,7 +199,7 @@ spec:
           cpu_bound: "true"
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/collector
+        cmd: /erda/cmd/monitor/collector/bin
         ports:
           - port: 7076
             protocol: TCP
@@ -295,7 +241,7 @@ spec:
       core-services:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/core-services
+        cmd: /erda/cmd/core-services/bin
         ports:
           - port: 9526
             protocol: TCP
@@ -346,7 +292,7 @@ spec:
       dicehub:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/dicehub
+        cmd: /erda/cmd/dicehub/bin
         ports:
           - port: 10000
             protocol: TCP
@@ -380,7 +326,7 @@ spec:
       dop:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/dop
+        cmd: /erda/cmd/dop/bin
         ports:
           - port: 9527 # http port
             protocol: "TCP"
@@ -411,7 +357,7 @@ spec:
       gittar:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/gittar
+        cmd: /erda/cmd/gittar/bin
         ports:
           - port: 5566
             protocol: TCP
@@ -444,7 +390,7 @@ spec:
       hepa:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/hepa
+        cmd: /erda/cmd/hepa/bin
         ports:
           - port: 8080
             protocol: TCP
@@ -492,7 +438,7 @@ spec:
           {{- end }}
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/monitor
+        cmd: /erda/cmd/monitor/monitor/bin
         ports:
           - port: 7096
             protocol: TCP
@@ -533,7 +479,7 @@ spec:
       msp:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/msp
+        cmd: /erda/cmd/msp/bin
         ports:
           - port: 8080
             protocol: TCP
@@ -585,7 +531,7 @@ spec:
       openapi:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/openapi
+        cmd: /erda/cmd/openapi/bin
         ports:
           - port: 9529
             protocol: TCP
@@ -625,9 +571,8 @@ spec:
             duration: 120
           exec: { }
       orchestrator:
-        image:
-          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/orchestrator
+        image: registry.erda.cloud/erda/erda:2.2-beta.4-20220629120025-f900638
+        cmd: /erda/cmd/orchestrator/bin
         ports:
           - port: 8081
             protocol: TCP
@@ -638,6 +583,7 @@ spec:
             protocol: "TCP"
             l4_protocol: "TCP"
         envs:
+          CUSTOM_REGCRED_SECRET: aliyun-registry
           DEBUG: "false"
           MSP_ADDR: msp:8080
           TENANT_GROUP_KEY: 58dcbf490ef3
@@ -660,9 +606,8 @@ spec:
             duration: 120
           exec: { }
       pipeline:
-        image:
-          {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/pipeline
+        image: registry.erda.cloud/erda/erda:2.2-beta.4-20220629120025-f900638
+        cmd: /erda/cmd/pipeline/bin
         ports:
           - port: 3081
             protocol: TCP
@@ -673,6 +618,7 @@ spec:
             protocol: "TCP"
             l4_protocol: "TCP"
         envs:
+          CUSTOM_REGCRED_SECRET: aliyun-registry
           DEBUG: "false"
           PIPELINE_STORAGE_URL: file:///devops/storage
           REFRESH_CLUSTERS_INTERVAL: "1m"
@@ -702,7 +648,7 @@ spec:
           cpu_bound: "true"
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/streaming
+        cmd: /erda/cmd/monitor/streaming/bin
         ports:
           - port: 7091
             protocol: TCP
@@ -761,7 +707,7 @@ spec:
       uc-adaptor:
         image:
           {{ .Values.global.image.repository }}/erda:{{ .Values.erda.tags.erda }}
-        cmd: /app/uc-adaptor
+        cmd: /erda/cmd/uc-adaptor/bin
         ports:
           - port: 12580
             protocol: TCP
@@ -801,7 +747,7 @@ spec:
       cluster-agent:
         image:
           {{ .Values.global.image.repository }}/cluster-agent:{{ .Values.erda.tags.clusterAgent }}
-        cmd: /app/cluster-agent
+        cmd: /erda/cmd/cluster-agent/bin
         envs:
           DEBUG: "false"
         resources:
@@ -847,7 +793,7 @@ spec:
           COLLECTOR_PUBLIC_ADDR: collector:7076
           ENABLE_BIGDATA: "false"
           ENABLE_EDGE: "false"
-          FDP_UI_ADDR: baidu.com
+          ENABLE_GALLERY: "true"
           GITTAR_ADDR: gittar:5566
           KRATOS_ADDR: "kratos-public"
           OPENAPI_ADDR: openapi:9529
@@ -875,7 +821,7 @@ spec:
         health_check:
           http:
             port: 80
-            path: /
+            path: "/_api/health"
             duration: 120
           exec: { }
     addons: { }
@@ -907,7 +853,6 @@ spec:
       TASK_MANAGER_MEMORY_MANAGED_FRACTION: "0.1"
       TASK_MANAGER_MEMORY_JVM_METASPACE_SIZE: "256M"
       TASK_MANAGER_JVM_EXIT_OOM: "true"
-      FLINK_ENV_JAVA_OPTS_TM: "-XX:+UseG1GC -XX:+PrintGC -XX:+PrintGCDetails"
     services:
       analyzer-alert:
         image:
@@ -1492,9 +1437,9 @@ spec:
             GROUP: spot-v2
           workload: per_node
         health_check:
-          http: { }
-          exec:
-            cmd: ps aux | grep fluent-bit || exit 1
+          http:
+            port: 2020
+            path: /
             duration: 120
     addons:
       infos:

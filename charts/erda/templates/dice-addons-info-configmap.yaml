@@ -26,21 +26,7 @@ data:
   NEXUS_PASSWORD: {{ .Values.nexus.custom.password }}
   {{- end }}
   {{- end }}
-  {{- if .Values.registry.custom.nodeName }}
-  REGISTRY_ADDR: {{ .Values.registry.custom.nodeIP }}:5000
-  {{- else }}
-  {{- if .Values.registry.custom.address }}
-  REGISTRY_ADDR: {{ .Values.registry.custom.address }}
-  {{- if .Values.registry.custom.username }}
-  REGISTRY_USERNAME: {{ .Values.registry.custom.username }}
-  {{- end }}
-  {{- if .Values.registry.custom.password }}
-  REGISTRY_PASSWORD: {{ .Values.registry.custom.password }}
-  {{- end }}
-  {{- else }}
-  REGISTRY_ADDR: erda-registry.{{ .Release.Namespace }}.svc.cluster.local:5000
-  {{- end }}
-  {{- end }}
+  {{- include "erda.registry.configuration" . | nindent 2 -}}
   {{- if not .Values.tags.worker }}
   ES_SECURITY_ENABLE: "false"
   ES_SECURITY_PASSWORD: ""

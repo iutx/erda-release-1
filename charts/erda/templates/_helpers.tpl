@@ -34,6 +34,16 @@ REGISTRY_ADDR: {{ template "erda.registry.address" . }}
 {{- end -}}
 
 {{/*
+Erda registry credential secret enabled
+*/}}
+{{- define "erda.registry.regcred.enabled" -}}
+{{- if and .Values.registry.custom.address .Values.registry.custom.username .Values.registry.custom.password -}}
+{{- true -}}
+{{- else -}}
+{{- end  -}}
+{{- end -}}
+
+{{/*
 Erda buildkitd enabled
 */}}
 {{- define "erda.buildkitd.enabled" -}}
@@ -49,16 +59,6 @@ Erda buildkitd configuration configmap
 {{ default  "buildkitd-config" .Values.buildkitd.existingConfigmap }}
 {{- end -}}
 
-{{/*
-Erda buildkitd configmap exsited
-*/}}
-{{- define "erda.buildkitd.configmapExsited" -}}
-{{- $buildkitConfigmap := (lookup "v1" "ConfigMap" $.Release.Namespace (include "erda.buildkitd.configmapName" .)) -}}
-{{- if $buildkitConfigmap -}}
-{{- true -}}
-{{- else -}}
-{{- end -}}
-{{- end -}}
 
 {{/*
 Lookup Erda etcd certs
@@ -98,9 +98,16 @@ Erda buildkitd configuration
 Erda certgen enabled
 */}}
 {{- define "erda.certgen.enabled" -}}
+{{- if .Values.tags.worker -}}
+{{- if not (include "erda.buildkitd.certsIntegrity" . ) -}}
+{{- true -}}
+{{- else -}}
+{{- end -}}
+{{- else -}}
 {{- if or (not (include "erda.buildkitd.certsIntegrity" . )) (not (include "erda.etcd.certsIntegrity" .)) -}}
 {{- true -}}
 {{- else -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 

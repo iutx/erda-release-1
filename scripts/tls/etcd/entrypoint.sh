@@ -7,9 +7,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 export ERDA_NAMESPACE=${ERDA_NAMESPACE:-"default"}
 export RENEW_ETCD_CERTS=${RENEW_CERTS:-"false"}
+export ERDA_IS_WORKER=${ERDA_IS_WORKER:-"false"}
 
 echo "erda namespace: ${ERDA_NAMESPACE}"
 echo "renew etcd certs: ${RENEW_ETCD_CERTS}"
+echo "erda is worker: ${ERDA_IS_WORKER}"
 
 # renew etcd certs
 renew_etcd_certs() {
@@ -35,6 +37,11 @@ apply_new_certs() {
   kubectl apply -f ./secrets
   exit 0
 }
+
+if [ "$ERDA_IS_WORKER" == "true" ]; then
+  echo "erda worker node, etcd certgen skip"
+  exit 0
+fi
 
 renew_etcd_certs "erda-etcd-server-secret"
 renew_etcd_certs "erda-etcd-client-secret"

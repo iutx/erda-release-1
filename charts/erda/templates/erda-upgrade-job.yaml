@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   backoffLimit: 6
   completions: 1
@@ -47,8 +48,7 @@ spec:
               value: "true"
             - name: MIGRATION_SKIP_SANDBOX
               value: "true"
-          image:
-            {{ .Values.global.image.repository }}/init-image:{{.Values.erda.tags.init}}
+          image: {{ .Values.global.image.repository }}/init-image:{{ .Values.erda.tags.init }}
           imagePullPolicy: {{.Values.global.image.imagePullPolicy}}
           name: init-image
           terminationMessagePath: /dev/termination-log

@@ -25,7 +25,7 @@ erda:
     protocol:
   # operator defines image tag and resources used for erda operator
   operator:
-    tag: "2.1"
+    tag: "2.2"
     resources:
       requests:
         cpu: 10m
@@ -47,19 +47,19 @@ erda:
     clusterAccessKey:
   # tags defines image tag used for erda component
   tags:
-    init: 2.1-04280944
-    erda: 2.2-alpha-20220609141954-1b04db8a2
-    clusterAgent: 2.2-beta.2-2-20220530131809-5641ae8
+    init: 2.2-06291729
+    erda: 2.2-beta-20220627053742-b3761bb
+    clusterAgent: 2.2-beta-20220627053606-b3761bb
     uc: dice-1.1-20210630-f4d63b99
-    ui: 2.1-20220512151830-74750f7
+    ui: 2.2-20220627165007-f081b52
 
-    telegraf: 2.2-beta.2-2-20220530100932-2cc21a1
-    fluentBit: 2.2-beta.2-2-20220530100809-ad7db42
+    telegraf: 2.2-20220621135220-2cc21a1
+    fluentBit: 2.2-20220623145652-bb10654
     analyzer:
-      alert: 2.2-beta.2-2.0-beta-20220530122101-f6179ad
-      error: 2.2-beta.2-2.0-beta-20220530131702-f6179ad
-      metrics: 2.2-beta.2-2.0-beta-20220530121912-f6179ad
-      tracing: 2.2-beta.2-2.0-beta-20220530122006-f6179ad
+      alert: 2.2.0-beta-20220621064045-f6179ad
+      error: 2.2.0-beta-20220621063947-f6179ad
+      metrics: 2.2.0-beta-20220621061432-f6179ad
+      tracing: 2.2.0-beta-20220621060932-f6179ad
   # component defines replicas and resources config used for erda component
   component:
     admin:
@@ -204,12 +204,6 @@ erda:
         max_mem:
     analyzerTracingTask:
       replicas:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
-    actionRunnerScheduler:
       resources:
         cpu:
         mem:
@@ -558,7 +552,7 @@ buildkitd:
 
 certgen:
   image:
-    tag: 20220616164305-3c9546b
+    tag: 20220630093931-6bd9f18
   enabled: true
   rbac:
     create: true

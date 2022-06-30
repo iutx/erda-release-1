@@ -25,6 +25,8 @@ spec:
               value: {{ .Release.Namespace | quote }}
             - name: KUBERNETES_SERVICE_DNS_DOMAIN
               value: {{ .Values.global.kubernetes.serviceDNSDomain }}
+            - name: ERDA_IS_WORKER
+              value: {{ .Values.tags.worker | quote }}
           image: {{ include "erda.certgen.image" . }}
           imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
           name: erda-certgen
