@@ -21,6 +21,10 @@ spec:
     spec:
       containers:
         - env:
+            - name: ERDA_ETCD_NAME
+              value: erda-etcd
+            - name: ERDA_SIZE
+              value: {{ .Values.global.size | default "demo" }}
             - name: ERDA_NAMESPACE
               value: {{ .Release.Namespace | quote }}
             - name: KUBERNETES_SERVICE_DNS_DOMAIN

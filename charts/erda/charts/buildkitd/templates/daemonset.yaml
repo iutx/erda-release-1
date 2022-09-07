@@ -22,8 +22,6 @@ spec:
             - unix:///run/user/1000/buildkit/buildkitd.sock
             - --addr
             - tcp://0.0.0.0:1234
-            - --oci-worker-snapshotter
-            - overlayfs
             {{- if (include "buildkitd.useConfig" .) }}
             - --config
             - /etc/buildkit/buildkitd.toml

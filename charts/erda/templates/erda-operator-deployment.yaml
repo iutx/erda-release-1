@@ -29,7 +29,7 @@ spec:
       serviceAccountName: erda-operator
       containers:
       - image: {{ .Values.global.image.repository }}/dice-operator:{{ .Values.erda.operator.tag }}
-        imagePullPolicy: {{ .Values.global.image.imagePullPolicy }}
+        imagePullPolicy: Always
         name: erda-operator
         env:
         - name: ETCD_SECRET_NAME

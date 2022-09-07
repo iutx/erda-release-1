@@ -4,6 +4,7 @@ metadata:
   name: dice-cluster-info
   namespace: {{ .Release.Namespace }}
 data:
+  DICE_CONTAINER_RUNTIME: {{ print (include "erda.containerRuntime" .) }}
   {{- if (include "erda.buildkitd.enabled" .) }}
   BUILDKIT_ENABLE: "true"
   BUILDKITD_ADDR: {{ printf "tcp://buildkitd.%s.svc.%s:1234" $.Release.Namespace $.Values.global.kubernetes.serviceDNSDomain }}
@@ -48,13 +49,3 @@ data:
   {{/*  TODO: Deprecated */}}
   CLUSTER_DNS: 10.96.0.3
   DICE_INSIDE: "false"
-  {{/*  LB_ADDR: {{ .Values.erda.clusterConfig.kubernetes.lb }}*/}}
-  {{/*  LB_MONITOR_URL: http://{{ .Values.erda.clusterConfig.kubernetes.lb }}*/}}
-  {{/*  KUBERNETES_VENDOR: dice*/}}
-  {{/*  KUBERNETES_VERSION: {{ .Values.erda.clusterConfig.kubernetes.version }}*/}}
-  {{/*  MASTER_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}*/}}
-  {{/*  MASTER_MONITOR_ADDR: {{ .Values.erda.clusterConfig.kubernetes.master }}*/}}
-  {{/*  MASTER_VIP_ADDR: {{ .Values.erda.clusterConfig.kubernetes.mastervip }}*/}}
-  {{/*  MASTER_VIP_URL: https://{{ .Values.erda.clusterConfig.kubernetes.mastervip }}*/}}
-  {{/*  DICE_SSH_PASSWORD:  {{ .Values.erda.clusterConfig.ssh.password |default "123123" | quote }}*/}}
-  {{/*  DICE_SSH_USER:  {{ .Values.erda.clusterConfig.ssh.user }}*/}}

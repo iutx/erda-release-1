@@ -128,3 +128,19 @@ Erda certgen image
 {{- define "erda.certgen.image" -}}
 {{ printf "%s/certgen:%s" .Values.global.image.repository .Values.certgen.image.tag | quote }}
 {{- end -}}
+
+
+{{/*
+Kubernetes container runtime
+*/}}
+{{- define "erda.containerRuntime" -}}
+{{- if .Values.global.kubernetes.containerRuntime -}}
+{{ .Values.global.kubernetes.containerRuntime }}
+{{- else -}}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") ( ge  ( trimSuffix "+" .Capabilities.KubeVersion.Minor ) "24") }}
+container
+{{- else -}}
+docker
+{{- end -}}
+{{- end -}}
+{{- end -}}

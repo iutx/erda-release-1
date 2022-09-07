@@ -11,6 +11,7 @@ global:
   domain: erda.io
   kubernetes:
     serviceDNSDomain: cluster.local
+    containerRuntime:
 
 tags:
   worker: false
@@ -25,7 +26,7 @@ erda:
     protocol:
   # operator defines image tag and resources used for erda operator
   operator:
-    tag: "2.2"
+    tag: "2.3"
     resources:
       requests:
         cpu: 10m
@@ -47,28 +48,21 @@ erda:
     clusterAccessKey:
   # tags defines image tag used for erda component
   tags:
-    init: 2.2-06291729
-    erda: 2.2-beta-20220627053742-b3761bb
-    clusterAgent: 2.2-beta-20220627053606-b3761bb
+    init: 2.3-08231041
+    erda: 2.3-alpha-20220823134548-e711028
+    clusterAgent: 2.3-alpha-20220823054349-e711028
     uc: dice-1.1-20210630-f4d63b99
     ui: 2.2-20220627165007-f081b52
 
-    telegraf: 2.2-20220621135220-2cc21a1
-    fluentBit: 2.2-20220623145652-bb10654
+    telegraf: 2.1-alpha-20220701111459-bb386c0
+    fluentBit: 2.1-alpha-20220818110042-c3aaeac
     analyzer:
-      alert: 2.2.0-beta-20220621064045-f6179ad
-      error: 2.2.0-beta-20220621063947-f6179ad
-      metrics: 2.2.0-beta-20220621061432-f6179ad
-      tracing: 2.2.0-beta-20220621060932-f6179ad
+      alert: 2.1.0-alpha-20220719072015-cd04f02
+      error: 2.1.0-alpha-20220719072015-cd04f02
+      metrics: 2.1.0-alpha-20220719072015-cd04f02
+      tracing: 2.1.0-alpha-20220719072015-cd04f02
   # component defines replicas and resources config used for erda component
   component:
-    admin:
-      replicas:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
     clusterManager:
       replicas:
       resources:
@@ -104,13 +98,6 @@ erda:
         mem:
         max_cpu:
         max_mem:
-    openapi:
-      replicas:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
     streaming:
       replicas:
       resources:
@@ -119,13 +106,6 @@ erda:
         max_cpu:
         max_mem:
     ui:
-      replicas:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
-    ucAdaptor:
       replicas:
       resources:
         cpu:
@@ -146,7 +126,7 @@ erda:
         mem:
         max_cpu:
         max_mem:
-    coreServices:
+    erdaServer:
       replicas:
       resources:
         cpu:
@@ -216,18 +196,6 @@ erda:
         max_cpu:
         max_mem:
     clusterDialer:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
-    dop:
-      resources:
-        cpu:
-        mem:
-        max_cpu:
-        max_mem:
-    eventbox:
       resources:
         cpu:
         mem:
